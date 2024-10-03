@@ -6,6 +6,7 @@ import 'package:santapan_fe/pages/onboarding_page.dart';
 import 'package:santapan_fe/pages/payment/method_payment_page.dart';
 import 'package:santapan_fe/pages/payment/payment_page.dart';
 import 'package:santapan_fe/pages/pesanan/detail_status_pesanan_page.dart';
+import 'package:santapan_fe/pages/scan/scan_result_page.dart';
 import 'package:santapan_fe/pages/splash_page.dart';
 
 void main() {
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: ColorStyles.bgScreen,
       ),
       debugShowCheckedModeBanner: false,
-      home: DetailMenuPage(),
+      home: ScanResultPage(),
     );
   }
 }

@@ -20,173 +20,166 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            SingleChildScrollView(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                imageMenu(context),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nama Menu",
+                        style: TypographyStyles.bold(20, ColorStyles.black),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        "Rp ${pricePerItem.toString()}",
+                        style: TypographyStyles.semiBold(16, ColorStyles.black),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        "Ini adalah deskripsi menu yang sangat enak dan sehat. Cocok untuk diet dan memenuhi kebutuhan nutrisi harian Anda.",
+                        style: TypographyStyles.regular(16, ColorStyles.black),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.check_circle,
+                            size: 24,
+                            color: ColorStyles.success,
+                          ),
+                          const SizedBox(width: 12),
+                          Flexible(
+                            child: Text(
+                              "Cocok untuk penderita diabetes.",
+                              style: TypographyStyles.regular(
+                                  16, ColorStyles.black),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      notes(),
+                      const SizedBox(height: 12),
+                      NutrisiInfo(),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Ulasan",
+                            style: TypographyStyles.bold(16, ColorStyles.black),
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Lihat Semua",
+                              style: TypographyStyles.regular(
+                                  12, ColorStyles.primary),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ulasanUser(),
+                      const SizedBox(height: 8),
+                      ulasanUser(),
+                      const SizedBox(height: 8),
+                      ulasanUser(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  imageMenu(context),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Nama Menu",
-                          style: TypographyStyles.bold(20, ColorStyles.black),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Rp ${pricePerItem.toString()}",
-                          style:
-                              TypographyStyles.semiBold(16, ColorStyles.black),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          "Ini adalah deskripsi menu yang sangat enak dan sehat. Cocok untuk diet dan memenuhi kebutuhan nutrisi harian Anda.",
-                          style:
-                              TypographyStyles.regular(16, ColorStyles.black),
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.check_circle,
-                              size: 24,
-                              color: ColorStyles.success,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Total Harga",
+                            style:
+                                TypographyStyles.semiBold(14, ColorStyles.grey),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "Rp ${totalPrice.toString()}",
+                            style: TypographyStyles.bold(16, ColorStyles.black),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (quantity > 1) {
+                                  quantity--;
+                                }
+                              });
+                            },
+                            child: Image.asset(
+                              AppAssets.iconMinus,
+                              width: 24,
+                              height: 24,
                             ),
-                            const SizedBox(width: 12),
-                            Flexible(
-                              child: Text(
-                                "Cocok untuk penderita diabetes.",
-                                style: TypographyStyles.regular(
-                                    16, ColorStyles.black),
-                              ),
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            "$quantity",
+                            style: TypographyStyles.bold(16, ColorStyles.black),
+                          ),
+                          const SizedBox(width: 10),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                quantity++;
+                              });
+                            },
+                            child: Image.asset(
+                              AppAssets.iconPlus,
+                              width: 24,
+                              height: 24,
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        notes(),
-                        const SizedBox(height: 12),
-                        NutrisiInfo(),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Ulasan",
-                              style:
-                                  TypographyStyles.bold(16, ColorStyles.black),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Lihat Semua",
-                                style: TypographyStyles.regular(
-                                    12, ColorStyles.primary),
-                              ),
-                            ),
-                          ],
-                        ),
-                        ulasanUser(),
-                        const SizedBox(height: 8),
-                        ulasanUser(),
-                        const SizedBox(height: 8),
-                        ulasanUser(),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  ButtonCustom(
+                    label: "Tambah ke Keranjang",
+                    onTap: () {
+                      // Handle add to cart logic
+                    },
+                    isExpand: true,
                   ),
                 ],
               ),
             ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Total Harga",
-                              style: TypographyStyles.semiBold(
-                                  14, ColorStyles.grey),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "Rp ${totalPrice.toString()}",
-                              style:
-                                  TypographyStyles.bold(16, ColorStyles.black),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  if (quantity > 1) {
-                                    quantity--;
-                                  }
-                                });
-                              },
-                              child: Image.asset(
-                                AppAssets.iconMinus,
-                                width: 24,
-                                height: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              "$quantity",
-                              style:
-                                  TypographyStyles.bold(16, ColorStyles.black),
-                            ),
-                            const SizedBox(width: 10),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  quantity++;
-                                });
-                              },
-                              child: Image.asset(
-                                AppAssets.iconPlus,
-                                width: 24,
-                                height: 24,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
-                    ButtonCustom(
-                      label: "Tambah ke Keranjang",
-                      onTap: () {
-                        // Handle add to cart logic
-                      },
-                      isExpand: true,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -301,7 +294,7 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
           ),
         ),
         Positioned(
-          top: 16,
+          top: 50,
           left: 16,
           child: GestureDetector(
             onTap: () {
