@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: ColorStyles.bgScreen,
       ),
       debugShowCheckedModeBanner: false,
-      home: Navbar(),
+      home: DetailMenuPage(),
     );
   }
 }

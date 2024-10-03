@@ -13,8 +13,9 @@ class DetailMenuPage extends StatefulWidget {
 }
 
 class _DetailMenuPageState extends State<DetailMenuPage> {
-  int quantity = 1; // To keep track of quantity
-  final double pricePerItem = 50000; // Price of one item
+  int quantity = 1;
+  final double pricePerItem = 50000;
+  double get totalPrice => pricePerItem * quantity;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +103,6 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
                 ],
               ),
             ),
-            // Floating button section
             Positioned(
               bottom: 0,
               left: 0,
@@ -118,9 +118,21 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Total Harga",
-                          style: TypographyStyles.bold(16, ColorStyles.black),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Total Harga",
+                              style: TypographyStyles.semiBold(
+                                  14, ColorStyles.grey),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "Rp ${totalPrice.toString()}",
+                              style:
+                                  TypographyStyles.bold(16, ColorStyles.black),
+                            ),
+                          ],
                         ),
                         Row(
                           children: [
@@ -161,7 +173,7 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 14),
                     ButtonCustom(
                       label: "Tambah ke Keranjang",
                       onTap: () {
