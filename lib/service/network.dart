@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:santapan_fe/models/response_model.dart';
 import 'package:santapan_fe/pages/auth/signin_page.dart';
-import 'package:santapan_fe/pages/data/utils/auth_utils.dart';
+import 'package:santapan_fe/data/utils/auth_utils.dart';
 
 class NetworkCaller {
   Future<NetworkResponse> getRequest(String url) async {

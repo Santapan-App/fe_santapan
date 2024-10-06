@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/pages/beranda/search_product_page.dart';
 import 'package:santapan_fe/widget/carousel_card_beranda.dart';
 import 'package:santapan_fe/widget/categories_food.dart';
 
@@ -16,121 +17,117 @@ class _BerandaPageState extends State<BerandaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(
-                height: 24,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 24,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: header(),
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: CarouselCardBeranda(),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: searchField(),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                "Kategori",
+                style: TypographyStyles.bold(16, ColorStyles.black),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: header(),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CategoriesFood(
+                      image: AppAssets.indonesiaCategories, text: "Indonesia"),
+                  CategoriesFood(
+                      image: AppAssets.westernCategories, text: "Western"),
+                  CategoriesFood(
+                      image: AppAssets.japaneseCategories, text: "Jepang"),
+                  CategoriesFood(
+                      image: AppAssets.koreanCategories, text: "Korea"),
+                ],
               ),
-              const SizedBox(
-                height: 24,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text(
+                "Paket Langganan",
+                style: TypographyStyles.bold(16, ColorStyles.black),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                child: CarouselCardBeranda(),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: langgananPaket(),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Rekomendasi",
+                      style: TypographyStyles.bold(16, ColorStyles.black)),
+                  Text("Lihat semua",
+                      style: TypographyStyles.semiBold(14, ColorStyles.black)),
+                ],
               ),
-              const SizedBox(
-                height: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: searchField(),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  "Kategori",
-                  style: TypographyStyles.bold(16, ColorStyles.black),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 24, right: 0),
+              child: SizedBox(
+                height: 200,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
                   children: [
-                    CategoriesFood(
-                        image: AppAssets.indonesiaCategories,
-                        text: "Indonesia"),
-                    CategoriesFood(
-                        image: AppAssets.westernCategories, text: "Western"),
-                    CategoriesFood(
-                        image: AppAssets.japaneseCategories, text: "Jepang"),
-                    CategoriesFood(
-                        image: AppAssets.koreanCategories, text: "Korea"),
+                    menuTitleHorizontal(),
+                    const SizedBox(width: 16),
+                    itemMenuKatalog(),
+                    const SizedBox(width: 16),
+                    itemMenuKatalog(),
+                    const SizedBox(width: 16),
+                    itemMenuKatalog(),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  "Paket Langganan",
-                  style: TypographyStyles.bold(16, ColorStyles.black),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: langgananPaket(),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text("Rekomendasi",
-                        style: TypographyStyles.bold(16, ColorStyles.black)),
-                    Text("Lihat semua",
-                        style:
-                            TypographyStyles.semiBold(14, ColorStyles.black)),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 24, right: 0),
-                child: SizedBox(
-                  height: 200,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      menuTitleHorizontal(),
-                      const SizedBox(width: 16),
-                      itemMenuKatalog(),
-                      const SizedBox(width: 16),
-                      itemMenuKatalog(),
-                      const SizedBox(width: 16),
-                      itemMenuKatalog(),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 56,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(
+              height: 56,
+            ),
+          ],
         ),
       ),
     );
@@ -250,10 +247,10 @@ class _BerandaPageState extends State<BerandaPage> {
       ),
       child: GestureDetector(
         onTap: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => SearchArtikelPage()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SearchProductPage()),
+          );
         },
         child: AbsorbPointer(
           child: TextField(

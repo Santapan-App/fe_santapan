@@ -99,87 +99,90 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
               ],
             ),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(16.0),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Total Harga",
-                            style:
-                                TypographyStyles.semiBold(14, ColorStyles.grey),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Rp ${totalPrice.toString()}",
-                            style: TypographyStyles.bold(16, ColorStyles.black),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if (quantity > 1) {
-                                  quantity--;
-                                }
-                              });
-                            },
-                            child: Image.asset(
-                              AppAssets.iconMinus,
-                              width: 24,
-                              height: 24,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            "$quantity",
-                            style: TypographyStyles.bold(16, ColorStyles.black),
-                          ),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                quantity++;
-                              });
-                            },
-                            child: Image.asset(
-                              AppAssets.iconPlus,
-                              width: 24,
-                              height: 24,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-                  ButtonCustom(
-                    label: "Tambah ke Keranjang",
-                    onTap: () {
-                      // Handle add to cart logic
-                    },
-                    isExpand: true,
-                  ),
-                ],
-              ),
-            ),
-          ),
+          bottomButtonPrice(),
         ],
+      ),
+    );
+  }
+
+  Positioned bottomButtonPrice() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Total Harga",
+                      style: TypographyStyles.semiBold(14, ColorStyles.grey),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Rp ${totalPrice.toString()}",
+                      style: TypographyStyles.bold(16, ColorStyles.black),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (quantity > 1) {
+                            quantity--;
+                          }
+                        });
+                      },
+                      child: Image.asset(
+                        AppAssets.iconMinus,
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "$quantity",
+                      style: TypographyStyles.bold(16, ColorStyles.black),
+                    ),
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          quantity++;
+                        });
+                      },
+                      child: Image.asset(
+                        AppAssets.iconPlus,
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            ButtonCustom(
+              label: "Tambah ke Keranjang",
+              onTap: () {
+                // Handle add to cart logic
+              },
+              isExpand: true,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -294,7 +297,7 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
           ),
         ),
         Positioned(
-          top: 50,
+          top: 65,
           left: 16,
           child: GestureDetector(
             onTap: () {

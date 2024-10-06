@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/pages/beranda/detail_menu_page.dart';
+import 'package:santapan_fe/pages/berlangganan/langganan_bulanan_page.dart';
+import 'package:santapan_fe/pages/berlangganan/langganan_mingguan_page.dart';
 import 'package:santapan_fe/pages/navbar.dart';
 import 'package:santapan_fe/pages/onboarding_page.dart';
 import 'package:santapan_fe/pages/payment/method_payment_page.dart';
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: ColorStyles.bgScreen,
       ),
       debugShowCheckedModeBanner: false,
-      home: ScanResultPage(),
+      home: LanggananBulananPage(),
     );
   }
 }

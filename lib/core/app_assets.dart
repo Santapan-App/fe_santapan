@@ -51,4 +51,6 @@ class AppAssets {
   static const leftRoundedIcon = "assets/images/arrow_left_rounded.png";
   static const cheklistRekomendasi = "assets/images/checklist_icon.png";
   static const imagePesanan = "assets/images/image_pesanan.png";
+  static const bannerMingguan = "assets/images/banner_mingguan.png";
+  static const bannerBulanan = "assets/images/banner_bulanan.png";
 }
