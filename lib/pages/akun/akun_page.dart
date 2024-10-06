@@ -54,7 +54,7 @@ class _AkunPageState extends State<AkunPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AlamatPage()));
+                                  builder: (context) => const AlamatPage()));
                         },
                         child: itemMenu(
                             context, AppAssets.alamatIcon, "Alamat Tersimpan"),

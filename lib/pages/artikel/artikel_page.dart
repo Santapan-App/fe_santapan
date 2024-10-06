@@ -52,7 +52,7 @@ class _ArtikelPageState extends State<ArtikelPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => DetailArtikelPage()));
+                            builder: (context) => const DetailArtikelPage()));
                   },
                   child: listArtikel(
                     context,
@@ -198,7 +198,7 @@ class _ArtikelPageState extends State<ArtikelPage> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SearchArtikelPage()),
+            MaterialPageRoute(builder: (context) => const SearchArtikelPage()),
           );
         },
         child: AbsorbPointer(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:santapan_fe/main.dart';
 import 'package:santapan_fe/models/response_model.dart';
 import 'package:santapan_fe/pages/auth/signin_page.dart';
 import 'package:santapan_fe/data/utils/auth_utils.dart';
@@ -77,11 +78,11 @@ class NetworkCaller {
 
 void moveToLogin() async {
   await AuthUtility.clearUserInfo();
-  // ignore: use_build_context_synchronously
-  // Navigator.pushAndRemoveUntil(
-  //     Flood.navigatorKey.currentState!.context,
-  //     MaterialPageRoute(
-  //         builder: (context) =>
-  //             const SigninPage()), // Change to your login screen
-  //     (route) => false);
+
+  Navigator.pushAndRemoveUntil(
+      Santapan.navigatorKey.currentState!.context,
+      MaterialPageRoute(
+          builder: (context) =>
+              const SigninPage()), // Change to your login screen
+      (route) => false);
 }

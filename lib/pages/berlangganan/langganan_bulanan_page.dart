@@ -5,7 +5,7 @@ import 'package:santapan_fe/core/typography_styles.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
 
 class LanggananBulananPage extends StatefulWidget {
-  const LanggananBulananPage({Key? key}) : super(key: key);
+  const LanggananBulananPage({super.key});
 
   @override
   State<LanggananBulananPage> createState() => _LanggananBulananPageState();

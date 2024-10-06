@@ -38,9 +38,9 @@ class _ScanResultPageState extends State<ScanResultPage> {
                   ),
                   const SizedBox(height: 24),
                   // Alert Widget
-                  AlertDangerScan(),
-                  AlertSuccessScan(),
-                  AlertWarningScan(),
+                  const AlertDangerScan(),
+                  const AlertSuccessScan(),
+                  const AlertWarningScan(),
                   const SizedBox(height: 16),
                   NutrisiResult(),
                   const SizedBox(

@@ -13,6 +13,8 @@ class NutrisiInfo extends StatelessWidget {
     Nutrisi(label: 'Fat', value: '15', satuan: 'g', color: Colors.brown),
   ];
 
+  NutrisiInfo({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -65,7 +67,7 @@ class Nutrisi {
 class NutrisiBox extends StatelessWidget {
   final Nutrisi nutrisi;
 
-  const NutrisiBox({Key? key, required this.nutrisi}) : super(key: key);
+  const NutrisiBox({super.key, required this.nutrisi});
 
   @override
   Widget build(BuildContext context) {

@@ -38,7 +38,7 @@ class _NavbarState extends State<Navbar> {
               controller: _pageController,
               onPageChanged: _onPageChanged,
               physics: const NeverScrollableScrollPhysics(),
-              children: <Widget>[
+              children: const <Widget>[
                 BerandaPage(),
                 PesananPage(),
                 ScanPage(),

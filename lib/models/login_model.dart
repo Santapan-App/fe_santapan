@@ -24,21 +24,18 @@ class LoginModel {
 
 class Data {
   String? email;
-  String? name;
   String? password;
 
-  Data({this.email, this.name, this.password});
+  Data({this.email, this.password});
 
   Data.fromJson(Map<String, dynamic> json) {
     email = json['email'];
-    name = json['name'];
     password = json['password'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['email'] = email;
-    data['name'] = name;
     data['password'] = password;
     return data;
   }

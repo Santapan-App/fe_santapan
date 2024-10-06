@@ -8,13 +8,13 @@ class ButtonPesanan extends StatelessWidget {
   final VoidCallback onPressed;
 
   const ButtonPesanan({
-    Key? key,
+    super.key,
     required this.label,
     required this.borderColor,
     required this.textStyle,
     required this.width,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

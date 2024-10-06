@@ -63,7 +63,7 @@ class _PreferensiMakananPageState extends State<PreferensiMakananPage> {
               //   "Apakah kamu punya riwayat salah satu dari kondisi berikut? Pilih yang sesuai untuk mendapatkan rekomendasi yang lebih tepat yaa...",
               //   style: TypographyStyles.regular(16, ColorStyles.black),
               //   textAlign: TextAlign.start,
-              // ),
+              // ),w
               const SizedBox(height: 32),
               Container(
                 width: double.infinity,
@@ -122,7 +122,7 @@ class _PreferensiMakananPageState extends State<PreferensiMakananPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Navbar(),
+                      builder: (context) => const Navbar(),
                     ),
                   );
                 },

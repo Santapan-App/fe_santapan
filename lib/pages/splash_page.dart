@@ -21,7 +21,7 @@ class _SplashPageState extends State<SplashPage> {
       (value) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) => OnboardingPage(),
+            builder: (context) => const OnboardingPage(),
           ),
           (route) => false,
         );

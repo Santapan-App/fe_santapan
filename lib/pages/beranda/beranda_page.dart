@@ -3,6 +3,8 @@ import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
 import 'package:santapan_fe/pages/beranda/search_product_page.dart';
+import 'package:santapan_fe/pages/berlangganan/langganan_bulanan_page.dart';
+import 'package:santapan_fe/pages/berlangganan/langganan_mingguan_page.dart';
 import 'package:santapan_fe/widget/carousel_card_beranda.dart';
 import 'package:santapan_fe/widget/categories_food.dart';
 
@@ -206,34 +208,54 @@ class _BerandaPageState extends State<BerandaPage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.all(12),
-            clipBehavior: Clip.hardEdge,
-            child: Image.asset(
-              AppAssets.langgananMingguan,
-              fit: BoxFit.cover,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LanggananMingguanPage(),
+                ),
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: const EdgeInsets.all(12),
+              clipBehavior: Clip.hardEdge,
+              child: Image.asset(
+                AppAssets.langgananMingguan,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.all(10),
-            clipBehavior: Clip.hardEdge,
-            child: Image.asset(
-              AppAssets.langgananBulanan,
-              fit: BoxFit.cover,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LanggananBulananPage(),
+                ),
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: const EdgeInsets.all(12),
+              clipBehavior: Clip.hardEdge,
+              child: Image.asset(
+                AppAssets.langgananBulanan,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -249,7 +271,7 @@ class _BerandaPageState extends State<BerandaPage> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SearchProductPage()),
+            MaterialPageRoute(builder: (context) => const SearchProductPage()),
           );
         },
         child: AbsorbPointer(

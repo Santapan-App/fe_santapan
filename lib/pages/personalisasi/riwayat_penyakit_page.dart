@@ -121,7 +121,7 @@ class _RiwayatPenyakitPageState extends State<RiwayatPenyakitPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PreferensiMakananPage(),
+                      builder: (context) => const PreferensiMakananPage(),
                     ),
                   );
                 },

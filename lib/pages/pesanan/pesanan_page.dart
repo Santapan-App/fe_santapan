@@ -50,7 +50,7 @@ class _PesananPageState extends State<PesananPage> {
             indicatorColor: ColorStyles.primary,
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             PesananSaatIniPage(),
             RiwayatPesananPage(),
