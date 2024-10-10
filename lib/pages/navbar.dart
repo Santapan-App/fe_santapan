@@ -50,8 +50,7 @@ class _NavbarState extends State<Navbar> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: 95,
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+                margin: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(24),

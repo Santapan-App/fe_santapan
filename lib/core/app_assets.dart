@@ -54,4 +54,6 @@ class AppAssets {
   static const bannerMingguan = "assets/images/banner_mingguan.png";
   static const bannerBulanan = "assets/images/banner_bulanan.png";
   static const verif = "assets/images/verif.png";
+  static const heartDiagnosa = "assets/images/heart_diagnosa.png";
+  static const preferensiMakan = "assets/images/preferensi_makan.png";
 }

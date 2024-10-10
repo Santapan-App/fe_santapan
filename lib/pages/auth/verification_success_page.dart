@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/pages/auth/signin_page.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
 
 class VerificationSuccessPage extends StatelessWidget {
@@ -46,7 +47,10 @@ class VerificationSuccessPage extends StatelessWidget {
               const SizedBox(height: 42),
               ButtonCustom(
                 label: "Login sekarang",
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SigninPage()));
+                },
                 isExpand: false,
               )
             ],

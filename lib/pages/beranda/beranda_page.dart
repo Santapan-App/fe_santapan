@@ -23,29 +23,29 @@ class _BerandaPageState extends State<BerandaPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 16,
-            ),
+            // const SizedBox(
+            //   height: 42,
+            // ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: header(),
             ),
             const SizedBox(
-              height: 24,
+              height: 4,
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: CarouselCardBeranda(),
             ),
             const SizedBox(
-              height: 16,
+              height: 8,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: searchField(),
             ),
             const SizedBox(
-              height: 16,
+              height: 12,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -55,7 +55,7 @@ class _BerandaPageState extends State<BerandaPage> {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 6,
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
@@ -74,7 +74,7 @@ class _BerandaPageState extends State<BerandaPage> {
               ),
             ),
             const SizedBox(
-              height: 16,
+              height: 12,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -84,14 +84,14 @@ class _BerandaPageState extends State<BerandaPage> {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 8,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: langgananPaket(),
             ),
             const SizedBox(
-              height: 16,
+              height: 12,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -106,7 +106,7 @@ class _BerandaPageState extends State<BerandaPage> {
               ),
             ),
             const SizedBox(
-              height: 16,
+              height: 10,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 24, right: 0),

@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/pages/akun/bantuan_page.dart';
+import 'package:santapan_fe/pages/akun/edit_profile_page.dart';
+import 'package:santapan_fe/pages/akun/ubah_password_page.dart';
 import 'package:santapan_fe/pages/alamat/alamat_page.dart';
+import 'package:santapan_fe/pages/auth/signin_page.dart';
+import 'package:santapan_fe/pages/personalisasi/personalisasi_page.dart';
 
 class AkunPage extends StatefulWidget {
   const AkunPage({super.key});
@@ -18,10 +23,9 @@ class _AkunPageState extends State<AkunPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Column(
               children: [
-                const SizedBox(height: 24),
                 Align(
                   child: Text(
                     "Akun",
@@ -30,7 +34,16 @@ class _AkunPageState extends State<AkunPage> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                profileMenu(),
+                InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditProfilePage(),
+                        ),
+                      );
+                    },
+                    child: profileMenu()),
                 const SizedBox(height: 16),
                 Container(
                   width: double.infinity,
@@ -41,13 +54,31 @@ class _AkunPageState extends State<AkunPage> {
                   padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
                   child: Column(
                     children: [
-                      itemMenu(context, AppAssets.personalisasiIcon,
-                          "Personalisasi"),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PersonalisasiPage()));
+                        },
+                        child: itemMenu(context, AppAssets.personalisasiIcon,
+                            "Personalisasi"),
+                      ),
                       const SizedBox(height: 12),
                       itemMenu(context, AppAssets.chatIcon, "Santapan Care"),
                       const SizedBox(height: 12),
-                      itemMenu(
-                          context, AppAssets.passwordKeyIcon, "Ubah Password"),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const UbahPasswordPage()));
+                        },
+                        child: itemMenu(context, AppAssets.passwordKeyIcon,
+                            "Ubah Password"),
+                      ),
                       const SizedBox(height: 12),
                       InkWell(
                         onTap: () {
@@ -60,9 +91,25 @@ class _AkunPageState extends State<AkunPage> {
                             context, AppAssets.alamatIcon, "Alamat Tersimpan"),
                       ),
                       const SizedBox(height: 12),
-                      itemMenu(context, AppAssets.bantuanIcon, "Bantuan"),
+                      InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const BantuanPage()));
+                          },
+                          child: itemMenu(
+                              context, AppAssets.bantuanIcon, "Bantuan")),
                       const SizedBox(height: 12),
-                      itemMenu(context, AppAssets.logoutIcon, "Logout"),
+                      InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SigninPage()));
+                          },
+                          child: itemMenu(
+                              context, AppAssets.logoutIcon, "Logout")),
                       const SizedBox(height: 12),
                     ],
                   ),
