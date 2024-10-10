@@ -53,4 +53,5 @@ class AppAssets {
   static const imagePesanan = "assets/images/image_pesanan.png";
   static const bannerMingguan = "assets/images/banner_mingguan.png";
   static const bannerBulanan = "assets/images/banner_bulanan.png";
+  static const verif = "assets/images/verif.png";
 }

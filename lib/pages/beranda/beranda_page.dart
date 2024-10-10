@@ -24,7 +24,7 @@ class _BerandaPageState extends State<BerandaPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(
-              height: 24,
+              height: 16,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),

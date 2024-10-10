@@ -20,69 +20,67 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorStyles.bgScreen,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                children: [
-                  _buildPage(
-                    context,
-                    image: AppAssets.onboard1,
-                    title: "Selamat Datang di Santapan",
-                    description:
-                        "Makanan yang dipersonalisasi untuk kondisi kesehatanmu.",
-                    buttonLabel: "Lanjutkan",
-                    buttonAction: () {
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                  ),
-                  _buildPage(
-                    context,
-                    image: AppAssets.onboard2,
-                    title: "Tentukan Perjalanan Sehat",
-                    description:
-                        "Identifikasi produk kemasan dan makanan yang cocok untukmu.",
-                    buttonLabel: "Lanjutkan",
-                    buttonAction: () {
-                      _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                    },
-                  ),
-                  _buildPage(
-                    context,
-                    image: AppAssets.onboard3,
-                    title: "Santap Sehat Tanpa Repot",
-                    description:
-                        "Hemat waktu dengan langganan katering makanan diantar langsung.",
-                    buttonLabel: "Mulai sekarang",
-                    buttonAction: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SigninPage(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              children: [
+                _buildPage(
+                  context,
+                  image: AppAssets.onboard1,
+                  title: "Selamat Datang di Santapan",
+                  description:
+                      "Makanan yang dipersonalisasi untuk kondisi kesehatanmu.",
+                  buttonLabel: "Lanjutkan",
+                  buttonAction: () {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+                _buildPage(
+                  context,
+                  image: AppAssets.onboard2,
+                  title: "Tentukan Perjalanan Sehat",
+                  description:
+                      "Identifikasi produk kemasan dan makanan yang cocok untukmu.",
+                  buttonLabel: "Lanjutkan",
+                  buttonAction: () {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                ),
+                _buildPage(
+                  context,
+                  image: AppAssets.onboard3,
+                  title: "Santap Sehat Tanpa Repot",
+                  description:
+                      "Hemat waktu dengan langganan katering makanan diantar langsung.",
+                  buttonLabel: "Mulai sekarang",
+                  buttonAction: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SigninPage(),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-            _buildPageIndicator(),
-            const SizedBox(height: 32),
-          ],
-        ),
+          ),
+          _buildPageIndicator(),
+          const SizedBox(height: 32),
+        ],
       ),
     );
   }

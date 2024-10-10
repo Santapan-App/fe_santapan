@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/color_styles.dart';
+import 'package:santapan_fe/pages/auth/verification_page.dart';
+import 'package:santapan_fe/pages/auth/verification_success_page.dart';
+import 'package:santapan_fe/pages/navbar.dart';
+import 'package:santapan_fe/pages/scan/scan_result_page.dart';
 import 'package:santapan_fe/pages/splash_page.dart';
 
 void main() {
@@ -18,7 +22,7 @@ class Santapan extends StatelessWidget {
         scaffoldBackgroundColor: ColorStyles.bgScreen,
       ),
       debugShowCheckedModeBanner: false,
-      home: const SplashPage(),
+      home: const VerificationSuccessPage(),
     );
   }
 }

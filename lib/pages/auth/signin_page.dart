@@ -45,15 +45,15 @@ class _SigninPageState extends State<SigninPage> {
 
     NetworkResponse response = await NetworkCaller().postRequest(url, body);
 
-    print('Status Code: ${response.statusCode}');
-    print('Response Body: ${response.body}');
-
     if (response.isSuccess && response.body != null) {
       LoginModel user = LoginModel.fromJson(response.body!);
       await AuthUtility.setUserInfo(user);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login berhasil!')),
+        const SnackBar(
+          content: Text('Login berhasil!'),
+          backgroundColor: ColorStyles.success,
+        ),
       );
 
       Navigator.pushReplacement(
@@ -62,9 +62,14 @@ class _SigninPageState extends State<SigninPage> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login gagal, coba lagi.')),
+        const SnackBar(
+          content: Text('Login gagal, coba lagi.'),
+          backgroundColor: ColorStyles.danger,
+        ),
       );
     }
+    print('Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
   }
 
   @override

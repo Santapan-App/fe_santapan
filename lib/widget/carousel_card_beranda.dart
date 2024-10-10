@@ -1,4 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart' as carousel;
 import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
@@ -24,9 +24,10 @@ class _CarouselCardBerandaState extends State<CarouselCardBeranda> {
       builder: (context, constraints) {
         return Stack(
           children: [
-            CarouselSlider(
-              options: CarouselOptions(
-                //height: 174,
+            carousel.CarouselSlider(
+              // Use the alias here
+              options: carousel.CarouselOptions(
+                // Use the alias here
                 autoPlay: true,
                 enlargeCenterPage: true,
                 viewportFraction: 1.0,
