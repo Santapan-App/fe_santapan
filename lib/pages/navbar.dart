@@ -31,39 +31,46 @@ class _NavbarState extends State<Navbar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            PageView(
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              physics: const NeverScrollableScrollPhysics(),
-              children: const <Widget>[
-                BerandaPage(),
-                PesananPage(),
-                ScanPage(),
-                ArtikelPage(),
-                AkunPage(),
-              ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 95,
-                margin: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+      body: Padding(
+        padding: const EdgeInsets.only(
+            bottom: 16), // Menambahkan padding bawah di Scaffold
+        child: SafeArea(
+          child: Stack(
+            children: [
+              PageView(
+                controller: _pageController,
+                onPageChanged: _onPageChanged,
+                physics: const NeverScrollableScrollPhysics(),
+                children: const <Widget>[
+                  BerandaPage(),
+                  PesananPage(),
+                  ScanPage(),
+                  ArtikelPage(),
+                  AkunPage(),
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: const EdgeInsets.all(0),
+                  // height: 95,
+                  clipBehavior: Clip.antiAlias,
+                  margin: const EdgeInsets.only(
+                    left: 12,
+                    right: 12,
+                    bottom: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                      ),
+                    ],
+                  ),
                   child: BottomNavigationBar(
                     showSelectedLabels: true,
                     showUnselectedLabels: true,
@@ -197,8 +204,8 @@ class _NavbarState extends State<Navbar> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

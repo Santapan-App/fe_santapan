@@ -29,9 +29,8 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
                 ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: 7,
-                  shrinkWrap: true, // Allow the ListView to take its height
-                  physics:
-                      const NeverScrollableScrollPhysics(), // Disable scrolling
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
