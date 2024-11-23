@@ -5,7 +5,9 @@ import 'package:santapan_fe/pages/akun/edit_profile_page.dart';
 import 'package:santapan_fe/pages/akun/ubah_password_page.dart';
 import 'package:santapan_fe/pages/auth/verification_page.dart';
 import 'package:santapan_fe/pages/auth/verification_success_page.dart';
+import 'package:santapan_fe/pages/beranda/detail_menu_page.dart';
 import 'package:santapan_fe/pages/navbar.dart';
+import 'package:santapan_fe/pages/payment/payment_page.dart';
 import 'package:santapan_fe/pages/personalisasi/personalisasi_page.dart';
 import 'package:santapan_fe/pages/scan/scan_result_page.dart';
 import 'package:santapan_fe/pages/splash_page.dart';
@@ -26,7 +28,7 @@ class Santapan extends StatelessWidget {
         scaffoldBackgroundColor: ColorStyles.bgScreen,
       ),
       debugShowCheckedModeBanner: false,
-      home: ScanResultPage(),
+      home: DetailMenuPage(),
     );
   }
 }

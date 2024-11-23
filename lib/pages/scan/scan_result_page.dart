@@ -141,9 +141,7 @@ class _ScanResultPageState extends State<ScanResultPage> {
                                     style: TypographyStyles.semiBold(
                                         16, ColorStyles.black),
                                   ),
-                                  const SizedBox(
-                                      width:
-                                          16), // Ubah menjadi 16 untuk lebih seimbang
+                                  const SizedBox(width: 16),
                                   Row(
                                     children: [
                                       const Icon(
@@ -179,7 +177,7 @@ class _ScanResultPageState extends State<ScanResultPage> {
                               builder: (context) => const Navbar()));
                     },
                     isExpand: true,
-                  )
+                  ),
                 ],
               ),
             ),
