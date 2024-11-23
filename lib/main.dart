@@ -28,7 +28,7 @@ class Santapan extends StatelessWidget {
         scaffoldBackgroundColor: ColorStyles.bgScreen,
       ),
       debugShowCheckedModeBanner: false,
-      home: DetailMenuPage(),
+      home: Navbar(),
     );
   }
 }
