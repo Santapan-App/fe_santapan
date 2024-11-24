@@ -91,82 +91,7 @@ class _ScanResultPageState extends State<ScanResultPage> {
                   Text("Hidangan berikut cocok dengan makanan yang kamu scan!",
                       style: TypographyStyles.regular(14, ColorStyles.grey)),
                   const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.network(
-                            "https://picsum.photos/200/300",
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Nama Makanan",
-                                style:
-                                    TypographyStyles.semiBold(16, Colors.black),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                                style:
-                                    TypographyStyles.regular(14, Colors.grey),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Rp40.000",
-                                    style: TypographyStyles.semiBold(
-                                        16, ColorStyles.black),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(
-                                          width:
-                                              4), // Jarak antara bintang dan rating
-                                      Text(
-                                        "1.0",
-                                        style: TypographyStyles.regular(
-                                            14, Colors.black),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  itemMenuMakan(),
                   const SizedBox(height: 32),
                   ButtonCustom(
                     label: "Kembali ke Beranda",
@@ -183,6 +108,79 @@ class _ScanResultPageState extends State<ScanResultPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Container itemMenuMakan() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              "https://picsum.photos/200/300",
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Nama Makanan",
+                  style: TypographyStyles.semiBold(16, Colors.black),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                  style: TypographyStyles.regular(14, Colors.grey),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Text(
+                      "Rp40.000",
+                      style: TypographyStyles.semiBold(16, ColorStyles.black),
+                    ),
+                    const SizedBox(width: 16),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "1.0",
+                          style: TypographyStyles.regular(14, Colors.black),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
