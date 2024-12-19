@@ -1,20 +1,20 @@
 class LoginModel {
-  bool? status;
-  String? token;
-  Data? data;
+  bool? success;
+  String? message;
+  LoginData? data;
 
-  LoginModel({this.status, this.token, this.data});
+  LoginModel({this.success, this.message, this.data});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    token = json['token'];
-    data = json['data'] != null ? Data.fromJson(json['data']) : null;
+    success = json['success'];
+    message = json['message'];
+    data = json['data'] != null ? LoginData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = status;
-    data['token'] = token;
+    data['success'] = success;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -22,21 +22,68 @@ class LoginModel {
   }
 }
 
-class Data {
-  String? email;
-  String? password;
+class LoginData {
+  String? accessToken;
+  String? refreshToken;
+  User? user;
 
-  Data({this.email, this.password});
+  LoginData({this.accessToken, this.refreshToken, this.user});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    email = json['email'];
-    password = json['password'];
+  LoginData.fromJson(Map<String, dynamic> json) {
+    accessToken = json['accessToken'];
+    refreshToken = json['refreshToken'];
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['accessToken'] = accessToken;
+    data['refreshToken'] = refreshToken;
+    if (user != null) {
+      data['user'] = user!.toJson();
+    }
+    return data;
+  }
+}
+
+class User {
+  int? id;
+  String? fullName;
+  String? email;
+  String? password;
+  String? createdAt;
+  String? updatedAt;
+  String? emailVerifiedAt;
+
+  User({
+    this.id,
+    this.fullName,
+    this.email,
+    this.password,
+    this.createdAt,
+    this.updatedAt,
+    this.emailVerifiedAt,
+  });
+
+  User.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    fullName = json['full_name'];
+    email = json['email'];
+    password = json['password'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    emailVerifiedAt = json['email_verified_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['full_name'] = fullName;
     data['email'] = email;
     data['password'] = password;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['email_verified_at'] = emailVerifiedAt;
     return data;
   }
 }

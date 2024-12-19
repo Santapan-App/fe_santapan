@@ -130,7 +130,7 @@ class _PersonalisasiPageState extends State<PersonalisasiPage> {
                       style: TypographyStyles.medium(16, ColorStyles.black),
                     ),
                   ))
-              .toList(),
+              ,
         ],
       ),
     );

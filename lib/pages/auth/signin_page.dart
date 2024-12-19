@@ -6,6 +6,7 @@ import 'package:santapan_fe/core/typography_styles.dart';
 import 'package:santapan_fe/data/urls.dart';
 import 'package:santapan_fe/pages/auth/forgot_password_page.dart';
 import 'package:santapan_fe/pages/auth/signup_page.dart';
+import 'package:santapan_fe/pages/navbar.dart';
 import 'package:santapan_fe/pages/personalisasi/riwayat_penyakit_page.dart';
 import 'package:santapan_fe/service/network.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
@@ -46,8 +47,17 @@ class _SigninPageState extends State<SigninPage> {
     NetworkResponse response = await NetworkCaller().postRequest(url, body);
 
     if (response.isSuccess && response.body != null) {
-      LoginModel user = LoginModel.fromJson(response.body!);
-      await AuthUtility.setUserInfo(user);
+      LoginModel loginInfo = LoginModel.fromJson(response.body!);
+      if (loginInfo.data?.user != null) {
+        await AuthUtility.setUserInfo(loginInfo.data!.user!, loginInfo.data!.accessToken, loginInfo.data!.refreshToken);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Login gagal, user tidak ditemukan.'),
+            backgroundColor: ColorStyles.danger,
+          ),
+        );
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -56,10 +66,12 @@ class _SigninPageState extends State<SigninPage> {
         ),
       );
 
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const RiwayatPenyakitPage()),
+        MaterialPageRoute(builder: (context) => const Navbar()),
+        (route) => false,
       );
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

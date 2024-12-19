@@ -1,29 +1,104 @@
 import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/urls.dart';
+import 'package:santapan_fe/models/response_model.dart';
+import 'package:santapan_fe/service/network.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
 
 class TambahAlamatPage extends StatefulWidget {
-  const TambahAlamatPage({super.key});
+  final int? addressId; // `null` if creating a new address
+  final Map<String, String>? initialData; // Pre-filled data for updating
+
+  const TambahAlamatPage({
+    super.key,
+    this.addressId,
+    this.initialData,
+  });
 
   @override
   State<TambahAlamatPage> createState() => _TambahAlamatPageState();
 }
 
 class _TambahAlamatPageState extends State<TambahAlamatPage> {
-  final TextEditingController _labelAlamatController = TextEditingController();
-  final TextEditingController _isiAlamatController = TextEditingController();
-  final TextEditingController _namaPenerimaController = TextEditingController();
-  final TextEditingController _catatanController = TextEditingController();
-  final TextEditingController _noPonselController = TextEditingController();
+  late final TextEditingController _labelAlamatController;
+  late final TextEditingController _isiAlamatController;
+  late final TextEditingController _namaPenerimaController;
+  late final TextEditingController _catatanController;
+  late final TextEditingController _noPonselController;
+
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize controllers with initial data for updates
+    _labelAlamatController =
+        TextEditingController(text: widget.initialData?['label'] ?? '');
+    _isiAlamatController =
+        TextEditingController(text: widget.initialData?['address'] ?? '');
+    _namaPenerimaController =
+        TextEditingController(text: widget.initialData?['name'] ?? '');
+    _catatanController =
+        TextEditingController(text: widget.initialData?['notes'] ?? '');
+    _noPonselController =
+        TextEditingController(text: widget.initialData?['phone'] ?? '');
+  }
+
+  Future<void> saveAddress() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final endpoint = Urls.addressUrl;
+
+    final method = widget.addressId == null
+        ? NetworkCaller().postRequest // POST for create
+        : NetworkCaller().putRequest; // PUT for update
+
+    final response = await method(
+      endpoint,
+      {
+        "label": _labelAlamatController.text,
+        "address": _isiAlamatController.text,
+        "name": _namaPenerimaController.text,
+        "phone": _noPonselController.text,
+        "notes": _catatanController.text,
+      },
+    );
+
+    if (response.isSuccess) {
+      Navigator.pop(context, true); // Indicate success
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(widget.addressId == null
+              ? "Address created successfully!"
+              : "Address updated successfully!"),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Failed to save address!"),
+        ),
+      );
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isUpdate = widget.addressId != null;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          "Tambah Alamat",
+          isUpdate ? "Edit Alamat" : "Tambah Alamat",
           style: TypographyStyles.bold(24, ColorStyles.black),
         ),
         centerTitle: true,
@@ -75,8 +150,14 @@ class _TambahAlamatPageState extends State<TambahAlamatPage> {
               padding: const EdgeInsets.all(16.0),
               color: Colors.transparent,
               child: ButtonCustom(
-                label: "Simpan Alamat",
-                onTap: () {},
+                label: _isLoading
+                    ? "Saving..."
+                    : (isUpdate ? "Update Alamat" : "Simpan Alamat"),
+                onTap: () {
+                  if (!_isLoading) {
+                    saveAddress();
+                  }
+                },
                 isExpand: true,
               ),
             ),

@@ -29,7 +29,7 @@ class Santapan extends StatelessWidget {
         scaffoldBackgroundColor: ColorStyles.bgScreen,
       ),
       debugShowCheckedModeBanner: false,
-      home: CategoriesPage(),
+      home: const SplashPage(),
     );
   }
 }

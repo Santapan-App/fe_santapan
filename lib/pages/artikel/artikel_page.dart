@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/article_model.dart';
+import 'package:santapan_fe/data/urls.dart';
+import 'package:santapan_fe/models/response_model.dart';
 import 'package:santapan_fe/pages/artikel/detail_artikel_page.dart';
 import 'package:santapan_fe/pages/artikel/search_artikel_page.dart';
+import 'package:santapan_fe/service/network.dart';
 
 class ArtikelPage extends StatefulWidget {
   const ArtikelPage({super.key});
@@ -13,6 +17,37 @@ class ArtikelPage extends StatefulWidget {
 }
 
 class _ArtikelPageState extends State<ArtikelPage> {
+    bool isLoading = false;
+    ArticleModel? _articleModel = ArticleModel();
+
+    Future<void> getCategories() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    final NetworkResponse response =
+        await NetworkCaller().getRequest(Urls.articleUrl + "?num=8");
+
+    if (response.isSuccess) {
+      _articleModel = ArticleModel.fromJson(response.body!);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to load data!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

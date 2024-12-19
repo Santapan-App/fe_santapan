@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/cart_home_model.dart';
+import 'package:santapan_fe/data/models/category_model.dart';
+import 'package:santapan_fe/data/models/menu_model.dart';
+import 'package:santapan_fe/data/urls.dart';
+import 'package:santapan_fe/models/response_model.dart';
+import 'package:santapan_fe/pages/auth/signin_page.dart';
+import 'package:santapan_fe/pages/beranda/detail_menu_page.dart';
 import 'package:santapan_fe/pages/beranda/search_product_page.dart';
 import 'package:santapan_fe/pages/berlangganan/langganan_bulanan_page.dart';
 import 'package:santapan_fe/pages/berlangganan/langganan_mingguan_page.dart';
+import 'package:santapan_fe/pages/categories/categories_page.dart';
+import 'package:santapan_fe/pages/payment/payment_page.dart';
+import 'package:santapan_fe/service/network.dart';
+import 'package:santapan_fe/widget/button_custom.dart';
 import 'package:santapan_fe/widget/carousel_card_beranda.dart';
 import 'package:santapan_fe/widget/categories_food.dart';
+import 'package:santapan_fe/widget/item_catalog.dart';
 
 class BerandaPage extends StatefulWidget {
   const BerandaPage({super.key});
@@ -17,121 +30,332 @@ class BerandaPage extends StatefulWidget {
 
 class _BerandaPageState extends State<BerandaPage> {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // const SizedBox(
-            //   height: 42,
-            // ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: header(),
-            ),
-            const SizedBox(
-              height: 4,
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: CarouselCardBeranda(),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: searchField(),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                "Kategori",
-                style: TypographyStyles.bold(16, ColorStyles.black),
-              ),
-            ),
-            const SizedBox(
-              height: 6,
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CategoriesFood(
-                      image: AppAssets.indonesiaCategories, text: "Indonesia"),
-                  CategoriesFood(
-                      image: AppAssets.westernCategories, text: "Western"),
-                  CategoriesFood(
-                      image: AppAssets.japaneseCategories, text: "Jepang"),
-                  CategoriesFood(
-                      image: AppAssets.koreanCategories, text: "Korea"),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(
-                "Paket Langganan",
-                style: TypographyStyles.bold(16, ColorStyles.black),
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: langgananPaket(),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Rekomendasi",
-                      style: TypographyStyles.bold(16, ColorStyles.black)),
-                  Text("Lihat semua",
-                      style: TypographyStyles.semiBold(14, ColorStyles.black)),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 24, right: 0),
-              child: SizedBox(
-                height: 200,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    menuTitleHorizontal(),
-                    const SizedBox(width: 16),
-                    itemMenuKatalog(),
-                    const SizedBox(width: 16),
-                    itemMenuKatalog(),
-                    const SizedBox(width: 16),
-                    itemMenuKatalog(),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 56,
-            ),
-          ],
+  void initState() {
+    super.initState();
+    getCategories();
+    getMenu();
+    getCart();
+  }
+
+  bool isLoadingRecommendation = false;
+  CategoryModel _categoryModel = CategoryModel();
+  bool isLoading = false;
+
+  int cartCount = 0;
+  int cartAmount = 0;
+
+  MenuModel _menuModel = MenuModel();
+
+  Future<void> getCategories() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    final NetworkResponse response =
+        await NetworkCaller().getRequest(Urls.categoriesURl + "?num=8");
+
+    if (response.isSuccess) {
+      _categoryModel = CategoryModel.fromJson(response.body!);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to load data!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> getMenu() async {
+    if (mounted) {
+      setState(() {
+        isLoadingRecommendation = true;
+      });
+    }
+
+    final NetworkResponse response =
+        await NetworkCaller().getRequest(Urls.menuUrl + "?num=8");
+
+    if (response.isSuccess) {
+      _menuModel = MenuModel.fromJson(response.body!);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to load menu data!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoadingRecommendation = false;
+      });
+    }
+  }
+
+  // Get Cart
+  Future<void> getCart() async {
+    if (mounted) {
+      setState(() {
+        isLoadingRecommendation = true;
+      });
+    }
+
+    final NetworkResponse response =
+        await NetworkCaller().getRequest(Urls.cartUrl + "/home");
+    if (response.isSuccess) {
+      final CartHomeModel cartModel = CartHomeModel.fromJson(response.body!);
+      if (cartModel.data != null) {
+        setState(() {
+          cartCount = cartModel.data!.totalQuantity ?? 0;
+          cartAmount = cartModel.data!.totalAmount ?? 0;
+        });
+      }
+    }
+    if (response.statusCode == 401) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SigninPage(),
         ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    final currencyFormatter =
+        NumberFormat.currency(locale: 'id', symbol: 'Rp', decimalDigits: 0);
+    return Scaffold(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // const SizedBox(
+                //   height: 42,
+                // ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: header(),
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: CarouselCardBeranda(),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: searchField(),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    "Kategori",
+                    style: TypographyStyles.bold(16, ColorStyles.black),
+                  ),
+                ),
+                getCategoriesList(),
+                const SizedBox(
+                  height: 12,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    "Paket Langganan",
+                    style: TypographyStyles.bold(16, ColorStyles.black),
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: langgananPaket(),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Rekomendasi",
+                          style: TypographyStyles.bold(16, ColorStyles.black)),
+                      Text("Lihat Semua",
+                          style:
+                              TypographyStyles.semiBold(14, ColorStyles.black)),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 0),
+                  child: SizedBox(
+                    height: 200,
+                    child: _menuModel.data?.menus?.isNotEmpty == true
+                        ? ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: _menuModel.data!.menus!.map((menu) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 16),
+                                child: ItemCatalog(
+                                    name: menu.title ?? "Unknown",
+                                    imageUrl: menu.image ?? "",
+                                    price: (menu.price ?? 0).toDouble(),
+                                    rating: 0,
+                                    onPress: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailMenuPage(
+                                            id: menu.id ?? 0,
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              );
+                            }).toList(),
+                          )
+                        : const SizedBox(), // Don't display anything if menus are empty
+                  ),
+                ),
+                const SizedBox(
+                  height: 250,
+                ),
+              ],
+            ),
+          ),
+          if (cartCount > 0)
+            Positioned(
+                bottom: 110,
+                left: 10,
+                child: Container(
+                  width: screenWidth - 20,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(16)),
+                  child: Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Total Harga",
+                            style: TypographyStyles.semiBold(
+                                12, ColorStyles.black),
+                          ),
+                          Text(
+                            currencyFormatter.format(cartAmount),
+                            style: TypographyStyles.bold(16, ColorStyles.black),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      // Better Button Not Button Custom
+                      GestureDetector(
+                        onTap: () async {
+                          final bool? isCartUpdated = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PaymentPage(),
+                            ),
+                          );
+
+                          // If the cart was updated, refetch getCart()
+                          if (isCartUpdated == true) {
+                            getCart();
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: ColorStyles.primary,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            "Lihat Pesanan",
+                            style: TypographyStyles.bold(12, Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+        ],
       ),
+    );
+  }
+
+  Widget getCategoriesList() {
+    if (_categoryModel.data == null ||
+        _categoryModel.data!.categories == null ||
+        _categoryModel.data!.categories!.isEmpty) {
+      return const Center(
+        child: Text("No Data Found"),
+      );
+    }
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4, // Number of columns
+        crossAxisSpacing: 10.0, // Horizontal spacing
+        mainAxisSpacing: 10.0, // Vertical spacing
+      ),
+      padding: const EdgeInsets.all(20), // Adding padding for clarity
+      itemCount:
+          _categoryModel.data!.categories!.length, // Total number of items
+      itemBuilder: (context, index) {
+        return CategoriesFood(
+          image: _categoryModel.data!.categories![index].image ?? "",
+          text: _categoryModel.data!.categories![index].title ?? "Loading..",
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CategoriesPage(
+                        id: (_categoryModel.data!.categories![index].id ?? 0)
+                            .toString(),
+                        title:
+                            _categoryModel.data!.categories![index].title ?? "",
+                      )),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -150,72 +374,24 @@ class _BerandaPageState extends State<BerandaPage> {
     );
   }
 
-  Container itemMenuKatalog() {
-    return Container(
-      width: 156,
-      height: 200,
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0XFFE1E1E1)),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      clipBehavior: Clip.hardEdge,
-      child: Column(
-        children: [
-          Expanded(
-            child: Image.network(
-              "https://picsum.photos/id/237/200/300",
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            color: Colors.white,
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Nama Menu",
-                  style: TypographyStyles.medium(12, ColorStyles.black),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-                      "Rp.20.000",
-                      style: TypographyStyles.bold(12, ColorStyles.black),
-                    ),
-                    const Spacer(),
-                    const Icon(Icons.star, color: ColorStyles.warning),
-                    Text(
-                      "4.9",
-                      style: TypographyStyles.medium(12, ColorStyles.warning),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Row langgananPaket() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           child: GestureDetector(
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              final bool? isCartUpdated = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const LanggananMingguanPage(),
+                  builder: (context) => LanggananMingguanPage(id: 1),
                 ),
               );
+
+              // If the cart was updated, refetch getCart()
+              if (isCartUpdated == true) {
+                getCart();
+              }
             },
             child: Container(
               decoration: BoxDecoration(
@@ -234,13 +410,18 @@ class _BerandaPageState extends State<BerandaPage> {
         const SizedBox(width: 16),
         Expanded(
           child: GestureDetector(
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              final bool? isCartUpdated = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const LanggananBulananPage(),
+                  builder: (context) => LanggananBulananPage(id: 2),
                 ),
               );
+
+              // If the cart was updated, refetch getCart()
+              if (isCartUpdated == true) {
+                getCart();
+              }
             },
             child: Container(
               decoration: BoxDecoration(

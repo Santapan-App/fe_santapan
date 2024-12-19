@@ -1,24 +1,115 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/menu_detail_model.dart';
+import 'package:santapan_fe/data/urls.dart';
+import 'package:santapan_fe/models/response_model.dart';
 import 'package:santapan_fe/pages/beranda/nutrisi_info.dart';
+import 'package:santapan_fe/service/network.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
 
 class DetailMenuPage extends StatefulWidget {
-  const DetailMenuPage({super.key});
+  final int id; // Change id to int
+
+  const DetailMenuPage({super.key, required this.id});
 
   @override
   State<DetailMenuPage> createState() => _DetailMenuPageState();
 }
 
 class _DetailMenuPageState extends State<DetailMenuPage> {
+  bool isLoading = false;
+  MenuDetailModel _menuDetailModel = MenuDetailModel();
+
   int quantity = 1;
   final double pricePerItem = 50000;
   double get totalPrice => pricePerItem * quantity;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getDetailMenu();
+    });
+  }
+
+  Future<void> getDetailMenu() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    // Correctly use the `id` parameter from the widget
+    final NetworkResponse response = await NetworkCaller().getRequest(
+        '${Urls.menuUrl}/${widget.id}'); // Use widget.id as int
+
+    if (response.isSuccess) {
+      _menuDetailModel = MenuDetailModel.fromJson(response.body!);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to load data!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  
+  Future<void> addToCart() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    final NetworkResponse response = await NetworkCaller().postRequest('${Urls.cartUrl}', {
+      "bundling_id": null,
+      "quantity": quantity,
+      "price": _menuDetailModel.data?.price ?? 0,
+      "menu_id": widget.id,
+      "name": _menuDetailModel.data?.title ?? '',
+    });
+    
+
+    if (response.statusCode == 201) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Added to cart successfully!"),
+            backgroundColor: ColorStyles.success,
+          ),
+
+        );
+      }
+      // Notify the previous screen to refetch the cart
+      Navigator.pop(context, true); // Return true to signal success
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to add to cart!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  @override
   Widget build(BuildContext context) {
+    final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
     return Scaffold(
       body: Stack(
         children: [
@@ -26,7 +117,7 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                imageMenu(context),
+                imageMenu(context, _menuDetailModel.data?.imageUrl ?? ''),
                 const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -34,20 +125,21 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Nama Menu",
+                        _menuDetailModel.data?.title ?? 'Loading..',
                         style: TypographyStyles.bold(20, ColorStyles.black),
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        "Rp ${pricePerItem.toString()}",
+                        currencyFormatter.format(_menuDetailModel.data?.price ?? 0),
                         style: TypographyStyles.semiBold(16, ColorStyles.black),
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        "Ini adalah deskripsi menu yang sangat enak dan sehat. Cocok untuk diet dan memenuhi kebutuhan nutrisi harian Anda.",
+                        _menuDetailModel.data?.description ?? '',
                         style: TypographyStyles.regular(16, ColorStyles.black),
                       ),
                       const SizedBox(height: 12),
+                      if (_menuDetailModel.data?.features?.glutenFree ?? false)
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -57,6 +149,7 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
                             color: ColorStyles.success,
                           ),
                           const SizedBox(width: 12),
+                          // Check if the menu is suitable for diabetes
                           Flexible(
                             child: Text(
                               "Cocok untuk penderita diabetes.",
@@ -67,35 +160,57 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
                         ],
                       ),
                       const SizedBox(height: 12),
-                      notes(),
-                      const SizedBox(height: 12),
-                      NutrisiInfo(),
-                      const SizedBox(height: 10),
+                      if (_menuDetailModel.data?.features?.vegetarian ?? false)
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Ulasan",
-                            style: TypographyStyles.bold(16, ColorStyles.black),
+                          const Icon(
+                            Icons.eco,
+                            size: 24,
+                            color: Colors.green,
                           ),
-                          TextButton(
-                            onPressed: () {},
+                          const SizedBox(width: 12),
+                          // Check if the menu is suitable for diabetes
+                          Flexible(
                             child: Text(
-                              "Lihat Semua",
+                              "Cocok untuk vegetarian.",
                               style: TypographyStyles.regular(
-                                  12, ColorStyles.primary),
+                                  16, ColorStyles.black),
                             ),
                           ),
                         ],
                       ),
-                      ulasanUser(),
-                      const SizedBox(height: 8),
-                      ulasanUser(),
-                      const SizedBox(height: 8),
-                      ulasanUser(),
+                      const SizedBox(height: 12),
+                      notes(),
+                      const SizedBox(height: 12),
+                      NutrisiInfo(nutrition: _menuDetailModel.data?.nutrition ?? Nutrition()),
+                      // const SizedBox(height: 10),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     Text(
+                      //       "Ulasan",
+                      //       style: TypographyStyles.bold(16, ColorStyles.black),
+                      //     ),
+                      //     TextButton(
+                      //       onPressed: () {},
+                      //       child: Text(
+                      //         "Lihat Semua",
+                      //         style: TypographyStyles.regular(
+                      //             12, ColorStyles.primary),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // ulasanUser(),
+                      // const SizedBox(height: 8),
+                      // ulasanUser(),
+                      // const SizedBox(height: 8),
+                      // ulasanUser(),
                     ],
                   ),
                 ),
+                const SizedBox(height: 200),
               ],
             ),
           ),
@@ -106,6 +221,8 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
   }
 
   Positioned bottomButtonPrice() {
+    final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
+
     return Positioned(
       bottom: 0,
       left: 0,
@@ -130,7 +247,7 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "Rp ${totalPrice.toString()}",
+                      currencyFormatter.format(totalPrice),
                       style: TypographyStyles.bold(16, ColorStyles.black),
                     ),
                   ],
@@ -285,32 +402,34 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
     );
   }
 
-  Stack imageMenu(BuildContext context) {
-    return Stack(
-      children: [
-        SizedBox(
-          width: double.infinity,
-          height: 330,
-          child: Image.network(
-            "https://picsum.photos/200/300",
-            fit: BoxFit.cover,
+  Stack imageMenu(BuildContext context, String imageUrl) {
+  return Stack(
+    children: [
+      SizedBox(
+        width: double.infinity,
+        height: 330,
+        child: imageUrl.isNotEmpty
+            ? Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              )
+            : CircularProgressIndicator(),
+      ),
+      Positioned(
+        top: 65,
+        left: 16,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Image.asset(
+            AppAssets.leftRoundedIcon,
+            width: 40,
+            height: 40,
           ),
         ),
-        Positioned(
-          top: 65,
-          left: 16,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Image.asset(
-              AppAssets.leftRoundedIcon,
-              width: 40,
-              height: 40,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 }

@@ -1,47 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/menu_category_model.dart';
+import 'package:santapan_fe/data/urls.dart';
 import 'package:santapan_fe/pages/beranda/detail_menu_page.dart';
+import 'package:santapan_fe/service/network.dart';
 
 class CategoriesPage extends StatefulWidget {
-  const CategoriesPage({super.key});
+  final String id;
+  final String title;
+
+  const CategoriesPage({super.key, required this.id, required this.title});
 
   @override
   State<CategoriesPage> createState() => _CategoriesPageState();
 }
 
 class _CategoriesPageState extends State<CategoriesPage> {
-  // Daftar data makanan
-  final List<Map<String, dynamic>> foodList = [
-    {
-      "name": "Nama Makanan 1",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "price": "Rp40.000",
-      "rating": 4.5,
-      "imageUrl": "https://picsum.photos/200/300?1"
-    },
-    {
-      "name": "Nama Makanan 2",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "price": "Rp50.000",
-      "rating": 4.0,
-      "imageUrl": "https://picsum.photos/200/300?2"
-    },
-    {
-      "name": "Nama Makanan 3",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "price": "Rp60.000",
-      "rating": 5.0,
-      "imageUrl": "https://picsum.photos/200/300?3"
-    },
-  ];
+  late MenuCategoryModel _menuModel;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _menuModel = MenuCategoryModel(); // Initialize an empty model
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchMenu();
+    });
+  }
+
+  Future<void> _fetchMenu() async {
+    setState(() => _isLoading = true);
+
+    final response = await NetworkCaller().getRequest('${Urls.menuUrl}/category/${widget.id}');
+    if (response.isSuccess) {
+      setState(() {
+        _menuModel = MenuCategoryModel.fromJson(response.body ?? {});
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load menu data!')),
+      );
+    }
+
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Nama Kategori",
+          widget.title,
           style: TypographyStyles.bold(24, ColorStyles.black),
         ),
         centerTitle: true,
@@ -49,42 +59,53 @@ class _CategoriesPageState extends State<CategoriesPage> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: ColorStyles.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: ListView.builder(
-          itemCount: foodList.length,
-          itemBuilder: (context, index) {
-            final food = foodList[index];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: itemMenuMakan(
-                food['name'],
-                food['description'],
-                food['price'],
-                food['rating'],
-                food['imageUrl'],
-              ),
-            );
-          },
-        ),
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _menuModel.data?.isEmpty ?? true
+              ? const Center(child: Text('No menus available'))
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                  child: ListView.builder(
+                    itemCount: _menuModel.data?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      final menu = _menuModel.data![index];
+                      return _buildMenuItem(
+                        name: menu.title ?? '',
+                        description: menu.description ?? '',
+                        price: menu.price?.toString() ?? '',
+                        rating: 4.5,
+                        imageUrl: menu.imageUrl ?? '',
+                      );
+                    },
+                  ),
+              )
     );
   }
 
-  Widget itemMenuMakan(String name, String description, String price,
-      double rating, String imageUrl) {
+  Widget _buildMenuItem({
+    required String name,
+    required String description,
+    required String price,
+    required double rating,
+    required String imageUrl,
+  }) {
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const DetailMenuPage()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DetailMenuPage(
+              id: 1
+            ),
+          ),
+        );
       },
       child: Container(
         padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.only(bottom: 20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
@@ -102,9 +123,10 @@ class _CategoriesPageState extends State<CategoriesPage> {
               borderRadius: BorderRadius.circular(16),
               child: Image.network(
                 imageUrl,
-                width: 80,
-                height: 80,
+                width: 100,
+                height: 100,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image, size: 100),
               ),
             ),
             const SizedBox(width: 12),
@@ -127,21 +149,17 @@ class _CategoriesPageState extends State<CategoriesPage> {
                   Row(
                     children: [
                       Text(
-                        price,
+                        'Rp$price',
                         style: TypographyStyles.semiBold(16, ColorStyles.black),
                       ),
-                      const SizedBox(width: 16),
+                      const Spacer(),
                       Row(
                         children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 20,
-                          ),
+                          const Icon(Icons.star, color: Colors.amber, size: 20),
                           const SizedBox(width: 4),
                           Text(
-                            rating.toString(),
-                            style: TypographyStyles.regular(14, Colors.black),
+                            rating.toStringAsFixed(1),
+                            style: TypographyStyles.bold(14, Colors.black),
                           ),
                         ],
                       ),

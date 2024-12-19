@@ -2,19 +2,145 @@ import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/bundling_detail_model.dart';
+import 'package:santapan_fe/data/models/bundling_menu_model.dart';
+import 'package:santapan_fe/data/urls.dart';
+import 'package:santapan_fe/models/response_model.dart';
+import 'package:santapan_fe/service/network.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
 
 class LanggananMingguanPage extends StatefulWidget {
-  const LanggananMingguanPage({super.key});
+  final int id; // Change id to int
+
+  const LanggananMingguanPage({Key? key, required this.id}) : super(key: key);
 
   @override
   State<LanggananMingguanPage> createState() => _LanggananMingguanPageState();
 }
 
 class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
-  int quantity = 1;
-  final double pricePerItem = 50000;
-  double get totalPrice => pricePerItem * quantity;
+  bool isLoading = false;
+  MenuCategoryModel _menuCategoryModel = MenuCategoryModel();
+  BundlingDetailModel _bundlingDetailModel = BundlingDetailModel();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getBundlingMenus();
+      getDetailBundling();
+    });
+  }
+
+  Future<void> getBundlingMenus() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    // Correctly use the `id` parameter from the widget
+    final NetworkResponse response = await NetworkCaller().getRequest(
+        '${Urls.bundlingUrl}/${widget.id}/menu'); // Use widget.id as int
+
+    if (response.isSuccess) {
+      _menuCategoryModel = MenuCategoryModel.fromJson(response.body!);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to load data!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> getDetailBundling() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    final NetworkResponse response = await NetworkCaller().getRequest(
+        '${Urls.bundlingUrl}/${widget.id}'); // Use widget.id as int
+
+    if (response.isSuccess) {
+      _bundlingDetailModel = BundlingDetailModel.fromJson(response.body!);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to load data!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  
+  Future<void> addToCart() async {
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    final bodyCart = {
+      "bundling_id": widget.id,
+      "quantity": 1,
+      "price": _bundlingDetailModel.data?.price ?? 0,
+      "menu_id": null,
+      "image_url": _bundlingDetailModel.data?.imageUrl ?? '',
+      "name": _bundlingDetailModel.data?.bundlingName ?? '',
+    };
+    print("Adding to cart... ${bodyCart}");
+    final NetworkResponse response = await NetworkCaller().postRequest('${Urls.cartUrl}', {
+      "bundling_id": widget.id,
+      "quantity": 1,
+      "price": _bundlingDetailModel.data?.price ?? 0,
+      "menu_id": null,
+      "image_url": _bundlingDetailModel.data?.imageUrl ?? '',
+      "name": _bundlingDetailModel.data?.bundlingName ?? '',
+    });
+    
+
+    if (response.statusCode == 201) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Added to cart successfully!"),
+            backgroundColor: ColorStyles.success,
+          ),
+
+        );
+      }
+      // Notify the previous screen to refetch the cart
+      Navigator.pop(context, true); // Return true to signal success
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.body?['message'] ?? "Failed to add to cart!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +154,23 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
                 const SizedBox(height: 16),
                 ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: 7,
+                  itemCount: _menuCategoryModel.data?.length ?? 0,
                   shrinkWrap: true, // Allow the ListView to take its height
                   physics:
                       const NeverScrollableScrollPhysics(), // Disable scrolling
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
-                        foodCard(context, index + 1),
+                        foodCard(
+                            context,
+                            _menuCategoryModel.data![index].day ?? '',
+                            _menuCategoryModel.data![index].menu ?? []),
                         const SizedBox(height: 6),
                       ],
                     );
                   },
                 ),
+                const SizedBox(height: 200),
               ],
             ),
           ),
@@ -78,15 +208,16 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
               ),
               const SizedBox(height: 4),
               Text(
-                "Rp ${totalPrice.toString()}",
+                "Rp ${_bundlingDetailModel.data?.price ?? 0}",
                 style: TypographyStyles.bold(16, ColorStyles.black),
               ),
               const SizedBox(height: 14),
               ButtonCustom(
                 label: "Langganan sekarang",
                 onTap: () {
-                  // Handle add to cart logic
+                  addToCart();
                 },
+                isLoading: isLoading,
                 isExpand: true,
               ),
               const SizedBox(height: 4),
@@ -137,7 +268,9 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
     );
   }
 
-  Card foodCard(BuildContext context, int day) {
+  Card foodCard(BuildContext context, String day, List<MenuData> data) {
+    // List of meal types
+
     return Card(
       color: Colors.white,
       child: Padding(
@@ -146,13 +279,18 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Hari $day',
+              day,
               style: TypographyStyles.bold(20, Colors.black),
             ),
-            const SizedBox(height: 4),
-            menuSection("Lunch", day),
-            const SizedBox(height: 4),
-            menuSection("Dinner", day),
+            const SizedBox(height: 8),
+            // Dynamically generate menuSection widgets for each meal
+            ...data.map((meal) => Column(
+                  children: [
+                    menuSection(
+                        meal.menu?.title ?? '', meal.menu?.description ?? '', meal.menu?.imageUrl ?? ''),
+                    const SizedBox(height: 8),
+                  ],
+                )),
           ],
         ),
       ),
@@ -160,7 +298,7 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
   }
 
   // Widget untuk menu lunch dan dinner
-  Widget menuSection(String mealType, int day) {
+  Widget menuSection(String title, String description, String imageUrl) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -172,7 +310,7 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
               width: 60,
               height: 60,
               child: Image.network(
-                "https://picsum.photos/id/237/200/300",
+                imageUrl,
                 fit: BoxFit.cover,
               ),
             ),
@@ -183,12 +321,12 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '$mealType - Nama Menu Makan',
+                  title,
                   style: TypographyStyles.bold(16, Colors.black),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Deskripsi singkat untuk $mealType pada hari $day.',
+                  description,
                   style: TypographyStyles.regular(14, Colors.grey),
                 ),
               ],

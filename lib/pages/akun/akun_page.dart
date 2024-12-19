@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/utils/auth_utils.dart';
 import 'package:santapan_fe/pages/akun/bantuan_page.dart';
 import 'package:santapan_fe/pages/akun/edit_profile_page.dart';
 import 'package:santapan_fe/pages/akun/ubah_password_page.dart';
@@ -39,7 +40,7 @@ class _AkunPageState extends State<AkunPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => EditProfilePage(),
+                          builder: (context) => const EditProfilePage(),
                         ),
                       );
                     },
@@ -54,18 +55,6 @@ class _AkunPageState extends State<AkunPage> {
                   padding: const EdgeInsets.fromLTRB(12, 16, 12, 16),
                   child: Column(
                     children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PersonalisasiPage()));
-                        },
-                        child: itemMenu(context, AppAssets.personalisasiIcon,
-                            "Personalisasi"),
-                      ),
-                      const SizedBox(height: 12),
                       itemMenu(context, AppAssets.chatIcon, "Santapan Care"),
                       const SizedBox(height: 12),
                       InkWell(
@@ -85,7 +74,9 @@ class _AkunPageState extends State<AkunPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const AlamatPage()));
+                                  builder: (context) => const AlamatPage(
+                                        isFromProfile: true,
+                                  )));
                         },
                         child: itemMenu(
                             context, AppAssets.alamatIcon, "Alamat Tersimpan"),
@@ -177,13 +168,13 @@ class _AkunPageState extends State<AkunPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "emailuser@example.com",
+                  AuthUtility.userInfo.email ?? '',
                   style: TypographyStyles.semiBold(16, ColorStyles.black),
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  "Full Name User 123919199199191919919191",
+                  AuthUtility.userInfo.fullName ?? '',
                   style: TypographyStyles.medium(14, ColorStyles.grey),
                   overflow: TextOverflow.ellipsis,
                 ),

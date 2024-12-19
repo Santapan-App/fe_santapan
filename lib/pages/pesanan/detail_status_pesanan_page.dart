@@ -5,7 +5,9 @@ import 'package:santapan_fe/core/typography_styles.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
 
 class DetailStatusPesananPage extends StatefulWidget {
-  const DetailStatusPesananPage({super.key});
+  final int? id; // Add an id field of type int
+
+  const DetailStatusPesananPage({super.key, this.id}); // Constructor to pass the id
 
   @override
   State<DetailStatusPesananPage> createState() =>
@@ -27,7 +29,7 @@ class _DetailStatusPesananPageState extends State<DetailStatusPesananPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: ColorStyles.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           },
         ),
       ),
@@ -99,7 +101,7 @@ class _DetailStatusPesananPageState extends State<DetailStatusPesananPage> {
                               TypographyStyles.regular(12, ColorStyles.black),
                         ),
                         Text(
-                          "123456789",
+                          widget.id?.toString() ?? "Unknown", // Accessing the id here
                           style: TypographyStyles.medium(12, ColorStyles.black),
                         )
                       ],

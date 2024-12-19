@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/address_model.dart';
+import 'package:santapan_fe/data/urls.dart';
+import 'package:santapan_fe/models/response_model.dart';
 import 'package:santapan_fe/pages/alamat/tambah_alamat_page.dart';
+import 'package:santapan_fe/service/network.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
 
 class AlamatPage extends StatefulWidget {
-  const AlamatPage({super.key});
+  final bool isFromProfile;
+  final AddressData? selectedAddress;  // New parameter
+
+  const AlamatPage({super.key, this.isFromProfile = false, this.selectedAddress});
 
   @override
   State<AlamatPage> createState() => _AlamatPageState();
@@ -14,6 +21,41 @@ class AlamatPage extends StatefulWidget {
 
 class _AlamatPageState extends State<AlamatPage> {
   int? _selectedIndex;
+  AddressModel? _addressModel;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchAddresses();
+    });
+  }
+
+  Future<void> fetchAddresses() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final NetworkResponse response =
+        await NetworkCaller().getRequest(Urls.addressUrl);
+
+    if (response.isSuccess) {
+      setState(() {
+        _addressModel = AddressModel.fromJson(response.body!);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Failed to load addresses!"),
+        ),
+      );
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +63,7 @@ class _AlamatPageState extends State<AlamatPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(
-          "Alamat",
+          widget.isFromProfile ? "Pilih Alamat" : "Alamat",
           style: TypographyStyles.bold(24, ColorStyles.black),
         ),
         centerTitle: true,
@@ -37,18 +79,22 @@ class _AlamatPageState extends State<AlamatPage> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: ListView(
-              children: [
-                const SizedBox(
-                  height: 24,
-                ),
-                cardAlamat(0),
-                const SizedBox(
-                  height: 12,
-                ),
-                cardAlamat(1),
-              ],
-            ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _addressModel?.data?.isEmpty ?? true
+                    ? const Center(child: Text("No addresses available"))
+                    : ListView.builder(
+                        itemCount: _addressModel!.data!.length,
+                        itemBuilder: (context, index) {
+                          final address = _addressModel!.data![index];
+                          return Column(
+                            children: [
+                              const SizedBox(height: 24),
+                              cardAlamat(address, index),
+                            ],
+                          );
+                        },
+                      ),
           ),
           Positioned(
             bottom: 24,
@@ -59,11 +105,16 @@ class _AlamatPageState extends State<AlamatPage> {
               color: Colors.transparent,
               child: ButtonCustom(
                 label: "Tambah Alamat",
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TambahAlamatPage()));
+                onTap: () async {
+                  final bool? isCreated = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const TambahAlamatPage()),
+                  );
+
+                  if (isCreated != null && isCreated) {
+                    fetchAddresses();
+                  }
                 },
                 isExpand: true,
               ),
@@ -74,13 +125,14 @@ class _AlamatPageState extends State<AlamatPage> {
     );
   }
 
-  Widget cardAlamat(int index) {
-    final isSelected = _selectedIndex == index;
+  Widget cardAlamat(AddressData address, int index) {
+    final isSelected = widget.selectedAddress?.id == address.id;  // Check if the address is selected
+
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
+        if (!widget.isFromProfile) {
+          Navigator.pop(context, address);  // Return the selected address
+        }
       },
       child: Container(
         width: double.infinity,
@@ -99,32 +151,26 @@ class _AlamatPageState extends State<AlamatPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Label Alamat",
+                    address.label ?? "No Label",
                     style: TypographyStyles.bold(16, Colors.black),
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 8),
                   Text(
-                    "Jalan H. Umayah II No.1, Citereup, Bandung Regency",
+                    address.address ?? "No Address",
                     style: TypographyStyles.regular(14, ColorStyles.grey),
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  const SizedBox(height: 8),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Palnazhmi",
+                        address.name ?? "No Name",
                         style: TypographyStyles.semiBold(12, ColorStyles.black),
                         overflow: TextOverflow.clip,
                       ),
-                      const SizedBox(
-                        width: 16,
-                      ),
+                      const SizedBox(width: 16),
                       Text(
-                        "628723727549",
+                        address.phone ?? "No Phone",
                         style: TypographyStyles.medium(12, ColorStyles.grey),
                       ),
                     ],
@@ -132,10 +178,33 @@ class _AlamatPageState extends State<AlamatPage> {
                 ],
               ),
             ),
-            Image.asset(
-              AppAssets.editIcon,
-              width: 24,
-              height: 24,
+            GestureDetector(
+              onTap: () async {
+                final bool? isCreated = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TambahAlamatPage(
+                      addressId: address.id ?? 0,
+                      initialData: {
+                        "label": address.label ?? "",
+                        "address": address.address ?? "",
+                        "name": address.name ?? "",
+                        "phone": address.phone ?? "",
+                        "notes": address.notes ?? "",
+                      },
+                    ),
+                  ),
+                );
+
+                if (isCreated != null && isCreated) {
+                  fetchAddresses();
+                }
+              },
+              child: Image.asset(
+                AppAssets.editIcon,
+                width: 24,
+                height: 24,
+              ),
             ),
           ],
         ),

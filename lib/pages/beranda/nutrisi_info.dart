@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/menu_detail_model.dart';
 
 class NutrisiInfo extends StatelessWidget {
-  final List<Nutrisi> nutrisiList = [
-    Nutrisi(label: 'Karbo', value: '45', satuan: 'g'),
-    Nutrisi(label: 'Protein', value: '20', satuan: 'g'),
-    Nutrisi(label: 'Kalori', value: '250', satuan: 'kcal'),
-    Nutrisi(label: 'Sodium', value: '600', satuan: 'mg'),
-    Nutrisi(label: 'Gula', value: '10', satuan: 'g'),
-    Nutrisi(label: 'Fat', value: '15', satuan: 'g'),
-  ];
+  final Nutrition nutrition;
 
-  NutrisiInfo({super.key});
+  late final List<Nutrisi> nutrisiList;
+
+  // Fix: Correctly passing nutrition in the constructor
+  NutrisiInfo({super.key, required this.nutrition}) {
+    nutrisiList = [
+      Nutrisi(label: 'Protein', value: nutrition.protein?.toString() ?? '0', satuan: 'g'),
+      Nutrisi(label: 'Kalori', value: nutrition.calories?.toString() ?? '0', satuan: 'kcal'),
+      Nutrisi(label: 'Fat', value: nutrition.fat?.toString() ?? '0', satuan: 'g'),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +101,5 @@ class NutrisiBox extends StatelessWidget {
         ),
       ),
     );
-    // Colored Circle
   }
 }
