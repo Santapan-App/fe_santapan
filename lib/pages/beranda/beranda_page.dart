@@ -40,7 +40,6 @@ class _BerandaPageState extends State<BerandaPage> {
     });
   }
 
-
   @override
   void dispose() {
     super.dispose();
@@ -148,8 +147,8 @@ class _BerandaPageState extends State<BerandaPage> {
       });
     }
 
-    final NetworkResponse response =
-        await NetworkCaller().getRequest("${Urls.menuUrl}/recommendation?num=8");
+    final NetworkResponse response = await NetworkCaller()
+        .getRequest("${Urls.menuUrl}/recommendation?num=8");
     if (response.isSuccess) {
       print("MENU PERSONALISASI: ${response.body}");
       _menuPersonalisasiModel = MenuModel.fromJson(response.body!);
@@ -168,6 +167,7 @@ class _BerandaPageState extends State<BerandaPage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -237,7 +237,7 @@ class _BerandaPageState extends State<BerandaPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Personalisasi Untukmu",
+                      Text("Rekomendasi Untukmu",
                           style: TypographyStyles.bold(16, ColorStyles.black)),
                     ],
                   ),
@@ -249,10 +249,12 @@ class _BerandaPageState extends State<BerandaPage> {
                   padding: const EdgeInsets.only(left: 24, right: 0),
                   child: SizedBox(
                     height: 200,
-                    child: _menuPersonalisasiModel.data?.menus?.isNotEmpty == true
+                    child: _menuPersonalisasiModel.data?.menus?.isNotEmpty ==
+                            true
                         ? ListView(
                             scrollDirection: Axis.horizontal,
-                            children: _menuPersonalisasiModel.data!.menus!.map((menu) {
+                            children: _menuPersonalisasiModel.data!.menus!
+                                .map((menu) {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 16),
                                 child: ItemCatalog(
@@ -261,10 +263,11 @@ class _BerandaPageState extends State<BerandaPage> {
                                     price: (menu.price ?? 0).toDouble(),
                                     rating: 5.0,
                                     onPress: () async {
-                                      final bool? isCartUpdated = await Navigator.push(
+                                      final bool? isCartUpdated =
+                                          await Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>  DetailMenuPage(
+                                          builder: (context) => DetailMenuPage(
                                             id: menu.id ?? 0,
                                           ),
                                         ),
