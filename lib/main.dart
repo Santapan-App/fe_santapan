@@ -25,6 +25,7 @@ class Santapan extends StatelessWidget {
   Widget build(BuildContext context) {
     navigatorKey = Santapan.navigatorKey;
     return MaterialApp(
+      key: navigatorKey,
       theme: ThemeData(
         scaffoldBackgroundColor: ColorStyles.bgScreen,
       ),

@@ -103,7 +103,6 @@ class _LanggananMingguanPageState extends State<LanggananMingguanPage> {
       "image_url": _bundlingDetailModel.data?.imageUrl ?? '',
       "name": _bundlingDetailModel.data?.bundlingName ?? '',
     };
-    print("Adding to cart... ${bodyCart}");
     final NetworkResponse response = await NetworkCaller().postRequest('${Urls.cartUrl}', {
       "bundling_id": widget.id,
       "quantity": 1,

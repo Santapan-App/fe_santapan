@@ -20,7 +20,6 @@ class AlamatPage extends StatefulWidget {
 }
 
 class _AlamatPageState extends State<AlamatPage> {
-  int? _selectedIndex;
   AddressModel? _addressModel;
   bool isLoading = false;
 

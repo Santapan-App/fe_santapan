@@ -12,7 +12,7 @@ class ItemPesanan extends StatefulWidget {
   final int price;
   final int initialQuantity;
   final int id; // Added id property
-  final Function(int, int, int) onQuantityChanged; // Callback function to send quantity and id
+  final Function(int, int, int)? onQuantityChanged; // Nullable callback function to send quantity and id
 
   const ItemPesanan({
     required this.name,
@@ -20,7 +20,7 @@ class ItemPesanan extends StatefulWidget {
     required this.image,
     required this.initialQuantity,
     required this.id, // Include the id in the constructor
-    required this.onQuantityChanged, // Pass the callback function
+    this.onQuantityChanged, // Pass the nullable callback function
     Key? key,
   }) : super(key: key);
 
@@ -29,38 +29,46 @@ class ItemPesanan extends StatefulWidget {
 }
 
 class _ItemPesananState extends State<ItemPesanan> {
-  int quantity = 1;
+  int? quantity; // Changed to nullable int
   Timer? _debounce; // Timer for debounce
 
   @override
   void initState() {
     super.initState();
-    quantity = widget.initialQuantity; // Set initial quantity from parent
+    quantity = widget.initialQuantity != null ? widget.initialQuantity : null; // Initialize quantity, checking if it's not null
   }
 
   // Increment with debounce
   void _incrementQuantity() {
+    if (quantity == null) return; // If quantity is null, do not proceed
+    
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     
     _debounce = Timer(const Duration(milliseconds: 300), () {
       setState(() {
-        quantity++;
+        quantity = (quantity ?? 0) + 1; // Safe increment, ensuring quantity is not null
       });
-      widget.onQuantityChanged(widget.id, quantity, widget.price); // Notify the parent with the updated quantity and id
+      if (widget.onQuantityChanged != null) {
+        widget.onQuantityChanged!(widget.id, quantity!, widget.price); // Call the callback only if it's not null
+      }
     });
   }
 
   // Decrement with debounce
   void _decrementQuantity() {
+    if (quantity == null) return; // If quantity is null, do not proceed
+    
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     
     _debounce = Timer(const Duration(milliseconds: 300), () {
       setState(() {
-        if (quantity > 1) {
-          quantity--;
+        if (quantity != null && quantity! > 1) {
+          quantity = quantity! - 1; // Safe decrement, ensuring quantity is not null
         }
       });
-      widget.onQuantityChanged(widget.id, quantity, widget.price); // Notify the parent with the updated quantity and id
+      if (widget.onQuantityChanged != null) {
+        widget.onQuantityChanged!(widget.id, quantity!, widget.price); // Call the callback only if it's not null
+      }
     });
   }
 
@@ -103,35 +111,38 @@ class _ItemPesananState extends State<ItemPesanan> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  currencyFormatter.format(widget.price),
+                  "${currencyFormatter.format(widget.price)} x ${quantity ?? 'N/A'}",
                   style: TypographyStyles.regular(12, ColorStyles.grey),
                 ),
-                const SizedBox(height: 8),
               ],
             ),
           ),
-          IconButton(
-            icon: Image.asset(
-              AppAssets.iconMinus,
-              width: 24,
-              height: 24,
+          // Show quantity control buttons only if onQuantityChanged is not null
+          if (widget.onQuantityChanged != null) ...[
+            IconButton(
+              icon: Image.asset(
+                AppAssets.iconMinus,
+                width: 24,
+                height: 24,
+              ),
+              onPressed: quantity == null ? null : _decrementQuantity, // Disable if quantity is null
             ),
-            onPressed: _decrementQuantity,
-          ),
-          const SizedBox(width: 10),
-          Text(
-            quantity.toString(),
-            style: TypographyStyles.medium(14, ColorStyles.black),
-          ),
-          const SizedBox(width: 10),
-          IconButton(
-            icon: Image.asset(
-              AppAssets.iconPlus,
-              width: 24,
-              height: 24,
+            const SizedBox(width: 10),
+            // Display quantity only if it's not null
+            Text(
+              quantity?.toString() ?? 'N/A',
+              style: TypographyStyles.medium(14, ColorStyles.black),
             ),
-            onPressed: _incrementQuantity,
-          ),
+            const SizedBox(width: 10),
+            IconButton(
+              icon: Image.asset(
+                AppAssets.iconPlus,
+                width: 24,
+                height: 24,
+              ),
+              onPressed: quantity == null ? null : _incrementQuantity, // Disable if quantity is null
+            ),
+          ],
         ],
       ),
     );

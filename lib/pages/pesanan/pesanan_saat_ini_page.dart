@@ -6,6 +6,7 @@ import 'package:santapan_fe/core/typography_styles.dart';
 import 'package:santapan_fe/data/models/history_model.dart';
 import 'package:santapan_fe/data/urls.dart';
 import 'package:santapan_fe/models/response_model.dart';
+import 'package:santapan_fe/pages/pesanan/detail_status_pesanan_page.dart';
 import 'package:santapan_fe/service/network.dart';
 import 'package:santapan_fe/widget/order_card.dart';
 
@@ -80,9 +81,19 @@ class _PesananSaatIniPageState extends State<PesananSaatIniPage> {
                         ...ongoingResponse!.data.map((transaction) => Column(
                               children: [
                                 OrderCard(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetailStatusPesananPage(
+                                          id: transaction.id,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                   date: _formatDate(transaction.createdAt),
                                   status: transaction.status.toUpperCase(),
-                                  totalPrice: "Rp${transaction.amount}", orderId: 1,
+                                  totalPrice: "Rp${transaction.amount}", orderId: transaction.id,
                                 ),
                                 const SizedBox(height: 16),
                               ],

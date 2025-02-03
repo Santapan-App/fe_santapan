@@ -5,6 +5,7 @@ import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
 import 'package:santapan_fe/data/models/address_model.dart';
 import 'package:santapan_fe/data/models/cart_item_model.dart';
+import 'package:santapan_fe/data/models/courier_model.dart';
 import 'package:santapan_fe/data/models/transaction_model.dart';
 import 'package:santapan_fe/data/urls.dart';
 import 'package:santapan_fe/models/response_model.dart';
@@ -28,7 +29,8 @@ class _PaymentPageState extends State<PaymentPage> {
   Map<int, int> itemQuantities = {};
   int subtotal = 0;
   AddressData? address;
-  int? courierID;
+  Courier? courier;
+
 
   // Callback function to get updated quantity and id
   void _onQuantityChanged(int id, int updatedQuantity, int price) {
@@ -401,17 +403,17 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
           IconButton(
               onPressed: () async {
-                final int? id = await Navigator.push(
+                final Courier? courierRes = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const MethodPaymentPage(),
                   ),
                 );
 
-                if (id != null) {
+                if (courierRes != null) {
                   // Check if id is not null
                   setState(() {
-                    courierID = id;
+                    courier = courierRes;
                   });
                 }
               },

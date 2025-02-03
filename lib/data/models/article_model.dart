@@ -1,17 +1,19 @@
 class ArticleModel {
   bool? status;
   String? message;
-  List<ArticleData>? data;
+  List<ArticleData>? articles; // Change 'data' to 'articles'
+  String? nextCursor; // Add nextCursor
 
-  ArticleModel({this.status, this.message, this.data});
+  ArticleModel({this.status, this.message, this.articles, this.nextCursor});
 
   ArticleModel.fromJson(Map<String, dynamic> json) {
     status = json['success']; // Assuming API uses "success" for status
     message = json['message'];
-    if (json['data'] != null) {
-      data = <ArticleData>[];
-      json['data'].forEach((v) {
-        data!.add(ArticleData.fromJson(v));
+    nextCursor = json['data']['nextCursor']; // Get the nextCursor value
+    if (json['data']['articles'] != null) {  // Change 'data' to 'articles'
+      articles = <ArticleData>[];
+      json['data']['articles'].forEach((v) {
+        articles!.add(ArticleData.fromJson(v));
       });
     }
   }
@@ -20,8 +22,11 @@ class ArticleModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['success'] = status;
     data['message'] = message;
-    if (this.data != null) {
-      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    if (articles != null) {
+      data['data'] = {
+        'articles': articles!.map((v) => v.toJson()).toList(),
+        'nextCursor': nextCursor
+      };
     }
     return data;
   }

@@ -24,13 +24,16 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
   MenuDetailModel _menuDetailModel = MenuDetailModel();
 
   int quantity = 1;
-  final double pricePerItem = 50000;
-  double get totalPrice => pricePerItem * quantity;
+  num pricePerItem = 0;
+  num get totalPrice => pricePerItem * quantity;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        pricePerItem = _menuDetailModel.data?.price ?? 0;
+      });
       getDetailMenu();
     });
   }
@@ -74,9 +77,10 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
     final NetworkResponse response = await NetworkCaller().postRequest('${Urls.cartUrl}', {
       "bundling_id": null,
       "quantity": quantity,
-      "price": _menuDetailModel.data?.price ?? 0,
+      "price": (_menuDetailModel.data?.price ?? 0) * quantity,
       "menu_id": widget.id,
       "name": _menuDetailModel.data?.title ?? '',
+      "image_url": _menuDetailModel.data?.imageUrl ?? '',
     });
     
 
@@ -222,7 +226,7 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
 
   Positioned bottomButtonPrice() {
     final currencyFormatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
-
+    final totalPriceQty = (_menuDetailModel.data?.price ?? 0) * quantity;
     return Positioned(
       bottom: 0,
       left: 0,
@@ -247,7 +251,7 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      currencyFormatter.format(totalPrice),
+                      currencyFormatter.format(totalPriceQty),
                       style: TypographyStyles.bold(16, ColorStyles.black),
                     ),
                   ],
@@ -293,8 +297,9 @@ class _DetailMenuPageState extends State<DetailMenuPage> {
             const SizedBox(height: 14),
             ButtonCustom(
               label: "Tambah ke Keranjang",
+              isLoading: isLoading,
               onTap: () {
-                // Handle add to cart logic
+                addToCart();
               },
               isExpand: true,
             ),

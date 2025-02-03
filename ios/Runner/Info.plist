@@ -54,6 +54,8 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>We need access to your camera to take pictures.</string>
+	<string>We need access to your camera to take pictures of food for scanning and recognition.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We may use the microphone to enhance the scanning process with audio input in future features.</string>
 </dict>
 </plist>

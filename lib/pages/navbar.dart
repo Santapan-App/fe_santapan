@@ -4,8 +4,8 @@ import 'package:santapan_fe/core/typography_styles.dart';
 import 'package:santapan_fe/pages/artikel/artikel_page.dart';
 import 'package:santapan_fe/pages/beranda/beranda_page.dart';
 import 'package:santapan_fe/pages/pesanan/pesanan_page.dart';
-import 'package:santapan_fe/pages/scan/scan_page.dart';
 import 'package:santapan_fe/pages/akun/akun_page.dart';
+import 'package:santapan_fe/pages/scan/scan_page.dart';
 
 class Navbar extends StatefulWidget {
   const Navbar({super.key});
@@ -25,7 +25,15 @@ class _NavbarState extends State<Navbar> {
   }
 
   void _onItemTapped(int index) {
-    _pageController.jumpToPage(index);
+    if (index == 2) {
+      // Open ScanPage directly without changing the page view
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ScanPage()),
+      );
+    } else {
+      _pageController.jumpToPage(index > 2 ? index - 1 : index); // Adjust index
+    }
   }
 
   @override
@@ -41,7 +49,6 @@ class _NavbarState extends State<Navbar> {
               children: const <Widget>[
                 BerandaPage(),
                 PesananPage(),
-                ScanPage(),
                 ArtikelPage(),
                 AkunPage(),
               ],
@@ -80,116 +87,62 @@ class _NavbarState extends State<Navbar> {
                         TypographyStyles.regular(12, Colors.grey),
                     items: [
                       BottomNavigationBarItem(
-                        icon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.berandaUnselected,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        icon: Image.asset(
+                          AppAssets.berandaUnselected,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
-                        activeIcon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.berandaSelected,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        activeIcon: Image.asset(
+                          AppAssets.berandaSelected,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
                         label: 'Beranda',
                       ),
                       BottomNavigationBarItem(
-                        icon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.pesananUnselected,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        icon: Image.asset(
+                          AppAssets.pesananUnselected,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
-                        activeIcon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.pesananSelected,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        activeIcon: Image.asset(
+                          AppAssets.pesananSelected,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
                         label: 'Pesanan',
                       ),
                       BottomNavigationBarItem(
-                        icon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.scanIcon,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        icon: Image.asset(
+                          AppAssets.scanIcon,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
                         label: '',
                       ),
                       BottomNavigationBarItem(
-                        icon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.artikelUnselected,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        icon: Image.asset(
+                          AppAssets.artikelUnselected,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
-                        activeIcon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.artikelSelected,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        activeIcon: Image.asset(
+                          AppAssets.artikelSelected,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
                         label: 'Artikel',
                       ),
                       BottomNavigationBarItem(
-                        icon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.akunUnselected,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        icon: Image.asset(
+                          AppAssets.akunUnselected,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
-                        activeIcon: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              AppAssets.akunSelected,
-                              fit: BoxFit.contain,
-                              scale: 1.8,
-                            ),
-                            const SizedBox(height: 2),
-                          ],
+                        activeIcon: Image.asset(
+                          AppAssets.akunSelected,
+                          fit: BoxFit.contain,
+                          scale: 1.8,
                         ),
                         label: 'Akun',
                       ),

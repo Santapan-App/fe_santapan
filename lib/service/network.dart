@@ -41,6 +41,7 @@ class NetworkCaller {
     Map<String, dynamic>? body,
   ) async {
     try {
+      print(AuthUtility.accessToken);
       Response response = await post(
         Uri.parse(url),
         headers: {
@@ -54,7 +55,6 @@ class NetworkCaller {
         return NetworkResponse(
             true, response.statusCode, jsonDecode(response.body));
       } else if (response.statusCode == 401) {
-        moveToLogin();
       } else {
         return NetworkResponse(
           false,
@@ -91,7 +91,6 @@ class NetworkCaller {
         return NetworkResponse(
             true, response.statusCode, jsonDecode(response.body));
       } else if (response.statusCode == 401) {
-        moveToLogin();
       } else {
         return NetworkResponse(
           false,
@@ -110,14 +109,20 @@ class NetworkCaller {
   }
 
 }
-
 void moveToLogin() async {
   await AuthUtility.clearUserInfo();
 
-  Navigator.pushAndRemoveUntil(
-      Santapan.navigatorKey.currentState!.context,
-      MaterialPageRoute(
-          builder: (context) =>
-              const SigninPage()), // Change to your login screen
-      (route) => false);
+  // Check if currentState is not null before accessing context
+  final navigatorState = Santapan.navigatorKey.currentState;
+  if (navigatorState != null) {
+    final BuildContext context = navigatorState.context;
+
+    // Ensure the context is available and navigate to the login screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SigninPage()),
+    );
+  } else {
+    return;
+  }
 }

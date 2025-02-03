@@ -3,16 +3,9 @@ import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
 
 class NutrisiResult extends StatelessWidget {
-  final List<Nutrisi> nutrisiList = [
-    Nutrisi(label: 'Karbo', value: '45', satuan: 'g'),
-    Nutrisi(label: 'Protein', value: '20', satuan: 'g'),
-    Nutrisi(label: 'Kalori', value: '250', satuan: 'kcal'),
-    Nutrisi(label: 'Sodium', value: '600', satuan: 'mg'),
-    Nutrisi(label: 'Gula', value: '10', satuan: 'g'),
-    Nutrisi(label: 'Fat', value: '15', satuan: 'g'),
-  ];
+  final List<Nutrisi> nutrisiList;
 
-  NutrisiResult({super.key});
+  const NutrisiResult({super.key, required this.nutrisiList});
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +58,7 @@ class NutrisiBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // Nutrisi Box
-        Container(
+    return Container(
       width: 75,
       height: 53,
       margin: const EdgeInsets.only(right: 16),
@@ -84,7 +75,7 @@ class NutrisiBox extends StatelessWidget {
               nutrisi.value,
               style: TypographyStyles.bold(16, ColorStyles.black),
             ),
-            const SizedBox(width: 4), // Space between value and unit
+            const SizedBox(width: 4),
             Text(
               nutrisi.satuan,
               style: TypographyStyles.regular(12, ColorStyles.black),
@@ -92,8 +83,6 @@ class NutrisiBox extends StatelessWidget {
           ],
         ),
       ),
-
-      // Colored Circle
     );
   }
 }

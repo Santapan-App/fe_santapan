@@ -32,12 +32,22 @@ class _BerandaPageState extends State<BerandaPage> {
   @override
   void initState() {
     super.initState();
-    getCategories();
-    getMenu();
-    getCart();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getCategories();
+      getMenu();
+      getPersonalisasiMenu();
+      getCart();
+    });
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   bool isLoadingRecommendation = false;
+  bool isLoadingPersonalisasi = false;
   CategoryModel _categoryModel = CategoryModel();
   bool isLoading = false;
 
@@ -45,6 +55,7 @@ class _BerandaPageState extends State<BerandaPage> {
   int cartAmount = 0;
 
   MenuModel _menuModel = MenuModel();
+  MenuModel _menuPersonalisasiModel = MenuModel();
 
   Future<void> getCategories() async {
     if (mounted) {
@@ -82,8 +93,7 @@ class _BerandaPageState extends State<BerandaPage> {
     }
 
     final NetworkResponse response =
-        await NetworkCaller().getRequest(Urls.menuUrl + "?num=8");
-
+        await NetworkCaller().getRequest("${Urls.menuUrl}?num=10");
     if (response.isSuccess) {
       _menuModel = MenuModel.fromJson(response.body!);
     } else {
@@ -131,6 +141,33 @@ class _BerandaPageState extends State<BerandaPage> {
     }
   }
 
+  Future<void> getPersonalisasiMenu() async {
+    if (mounted) {
+      setState(() {
+        isLoadingPersonalisasi = true;
+      });
+    }
+
+    final NetworkResponse response =
+        await NetworkCaller().getRequest("${Urls.menuUrl}/recommendation?num=8");
+    if (response.isSuccess) {
+      print("MENU PERSONALISASI: ${response.body}");
+      _menuPersonalisasiModel = MenuModel.fromJson(response.body!);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to load menu data!"),
+          ),
+        );
+      }
+    }
+    if (mounted) {
+      setState(() {
+        isLoadingPersonalisasi = false;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -200,7 +237,59 @@ class _BerandaPageState extends State<BerandaPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Rekomendasi",
+                      Text("Personalisasi Untukmu",
+                          style: TypographyStyles.bold(16, ColorStyles.black)),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 24, right: 0),
+                  child: SizedBox(
+                    height: 200,
+                    child: _menuPersonalisasiModel.data?.menus?.isNotEmpty == true
+                        ? ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: _menuPersonalisasiModel.data!.menus!.map((menu) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 16),
+                                child: ItemCatalog(
+                                    name: menu.title ?? "Unknown",
+                                    imageUrl: menu.image ?? "",
+                                    price: (menu.price ?? 0).toDouble(),
+                                    rating: 5.0,
+                                    onPress: () async {
+                                      final bool? isCartUpdated = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>  DetailMenuPage(
+                                            id: menu.id ?? 0,
+                                          ),
+                                        ),
+                                      );
+
+                                      // If the cart was updated, refetch getCart()
+                                      if (isCartUpdated == true) {
+                                        getCart();
+                                      }
+                                    }),
+                              );
+                            }).toList(),
+                          )
+                        : const SizedBox(), // Don't display anything if menus are empty
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Katalog Lainnya",
                           style: TypographyStyles.bold(16, ColorStyles.black)),
                       Text("Lihat Semua",
                           style:
@@ -225,7 +314,7 @@ class _BerandaPageState extends State<BerandaPage> {
                                     name: menu.title ?? "Unknown",
                                     imageUrl: menu.image ?? "",
                                     price: (menu.price ?? 0).toDouble(),
-                                    rating: 0,
+                                    rating: 5.0,
                                     onPress: () {
                                       Navigator.push(
                                         context,

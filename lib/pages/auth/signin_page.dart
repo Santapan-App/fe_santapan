@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/personalisasi_model.dart';
 import 'package:santapan_fe/data/urls.dart';
 import 'package:santapan_fe/pages/auth/forgot_password_page.dart';
 import 'package:santapan_fe/pages/auth/signup_page.dart';
 import 'package:santapan_fe/pages/navbar.dart';
+import 'package:santapan_fe/pages/personalisasi/personalisasi_page.dart';
 import 'package:santapan_fe/pages/personalisasi/riwayat_penyakit_page.dart';
 import 'package:santapan_fe/service/network.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
@@ -66,11 +68,20 @@ class _SigninPageState extends State<SigninPage> {
         ),
       );
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const Navbar()),
-        (route) => false,
-      );
+      var personalisasi = await AuthUtility.getUserPreferences();
+      if(personalisasi != null) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Navbar()),
+          (route) => false,
+        );
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const RiwayatPenyakitPage()),
+          (route) => false,
+        );
+      }
 
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

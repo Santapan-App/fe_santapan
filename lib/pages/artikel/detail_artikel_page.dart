@@ -4,7 +4,18 @@ import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
 
 class DetailArtikelPage extends StatelessWidget {
-  const DetailArtikelPage({super.key});
+  final String title;
+  final String date;
+  final String imageUrl;
+  final String content;
+
+  const DetailArtikelPage({
+    super.key,
+    required this.title,
+    required this.date,
+    required this.imageUrl,
+    required this.content,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +33,12 @@ class DetailArtikelPage extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(context);
                   },
-                  child:
-                      Image.asset(AppAssets.arrowLeft, width: 24, height: 24)),
+                  child: Image.asset(AppAssets.arrowLeft, width: 24, height: 24)),
               const SizedBox(
                 height: 24,
               ),
               Text(
-                "Mengatasi Hipertensi dengan Pola Makan yang Tepat",
+                title, // Use the dynamic title passed to the page
                 style: TypographyStyles.semiBold(16, ColorStyles.black),
                 overflow: TextOverflow.visible,
               ),
@@ -36,7 +46,7 @@ class DetailArtikelPage extends StatelessWidget {
                 height: 20,
               ),
               Text(
-                "12 Maret 2024",
+                date, // Use the dynamic date passed to the page
                 style: TypographyStyles.medium(12, ColorStyles.grey),
               ),
               const SizedBox(
@@ -48,7 +58,7 @@ class DetailArtikelPage extends StatelessWidget {
                 ),
                 clipBehavior: Clip.hardEdge,
                 child: Image.network(
-                  "https://picsum.photos/200/300",
+                  imageUrl, // Use the dynamic image URL passed to the page
                   width: double.infinity,
                   height: 214,
                   fit: BoxFit.cover,
@@ -58,7 +68,7 @@ class DetailArtikelPage extends StatelessWidget {
                 height: 24,
               ),
               Text(
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                content, // Use the dynamic content passed to the page
                 style: TypographyStyles.medium(12, ColorStyles.black),
                 textAlign: TextAlign.justify,
               ),

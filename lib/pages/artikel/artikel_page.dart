@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
@@ -17,18 +18,46 @@ class ArtikelPage extends StatefulWidget {
 }
 
 class _ArtikelPageState extends State<ArtikelPage> {
-    bool isLoading = false;
-    ArticleModel? _articleModel = ArticleModel();
+  bool isLoading = false;
+  ArticleModel? _articleModel;
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
 
-    Future<void> getCategories() async {
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(_onSearchChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getArticle();
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      getArticle(_searchController.text);
+    });
+  }
+
+  Future<void> getArticle([String search = ""]) async {
     if (mounted) {
       setState(() {
         isLoading = true;
       });
     }
 
-    final NetworkResponse response =
-        await NetworkCaller().getRequest(Urls.articleUrl + "?num=8");
+    final String url = search.isNotEmpty
+        ? Urls.articleUrl + "?num=8&search=$search"
+        : Urls.articleUrl + "?num=8&search=";
+
+    final NetworkResponse response = await NetworkCaller().getRequest(url);
 
     if (response.isSuccess) {
       _articleModel = ArticleModel.fromJson(response.body!);
@@ -47,7 +76,7 @@ class _ArtikelPageState extends State<ArtikelPage> {
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,76 +100,47 @@ class _ArtikelPageState extends State<ArtikelPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 searhField(),
-                const SizedBox(
-                  height: 24,
-                ),
+                const SizedBox(height: 24),
                 bannerArtikel(),
-                const SizedBox(
-                  height: 20,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const DetailArtikelPage()));
-                  },
-                  child: listArtikel(
-                    context,
-                    "https://picsum.photos/200/300",
-                    "Mengatasi Hipertensi dengan Pola Makan yang Tepat",
-                    "12 Maret 2024",
-                  ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                listArtikel(
-                  context,
-                  "https://picsum.photos/200/300",
-                  "Tips ips Pola Makan untuk Mengurangi Risiko Diabetes",
-                  "13 Maret 2024",
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                listArtikel(
-                  context,
-                  "https://picsum.photos/200/300",
-                  "Tips ips Pola Makan untuk Mengurangi Risiko Diabetes",
-                  "13 Maret 2024",
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                listArtikel(
-                  context,
-                  "https://picsum.photos/200/300",
-                  "Tips ips Pola Makan untuk Mengurangi Risiko Diabetes",
-                  "13 Maret 2024",
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                listArtikel(
-                  context,
-                  "https://picsum.photos/200/300",
-                  "Tips ips Pola Makan untuk Mengurangi Risiko Diabetes",
-                  "13 Maret 2024",
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                listArtikel(
-                  context,
-                  "https://picsum.photos/200/300",
-                  "Tips ips Pola Makan untuk Mengurangi Risiko Diabetes",
-                  "13 Maret 2024",
-                ),
+                const SizedBox(height: 20),
+                if (isLoading)
+                  const Center(child: CircularProgressIndicator())
+                else
+                  _articleModel != null
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _articleModel?.articles?.length ?? 0,
+                          itemBuilder: (context, index) {
+                            final article = _articleModel!.articles![index];
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DetailArtikelPage(
+                                      title: article.title ?? '',
+                                      date: article.createdAt?.toIso8601String() ?? "",
+                                      imageUrl: article.imageUrl ?? '',
+                                      content: article.content ?? '',
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: listArtikel(
+                                context,
+                                article.imageUrl ?? '',
+                                article.title ?? '',
+                                article.content ?? '',
+                                article.createdAt?.toIso8601String() ?? '',
+                              ),
+                            );
+                          },
+                        )
+                      : const Center(child: Text('No Articles Available')),
+                const SizedBox(height: 140),
               ],
             ),
           ),
@@ -150,10 +150,12 @@ class _ArtikelPageState extends State<ArtikelPage> {
   }
 
   Container listArtikel(
-      BuildContext context, String image, String title, String date) {
+      BuildContext context, String image, String title, String content, String date) {
+    final formattedDate = DateTime.parse(date).toLocal();
     return Container(
       width: double.infinity,
       height: 120,
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
@@ -186,18 +188,28 @@ class _ArtikelPageState extends State<ArtikelPage> {
                   title,
                   style: TypographyStyles.semiBold(14, ColorStyles.black),
                   textAlign: TextAlign.start,
-                  overflow: TextOverflow.visible,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
+                Text(
+                  content,
+                  style: TypographyStyles.regular(12, ColorStyles.grey),
+                  textAlign: TextAlign.start,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     const Icon(Icons.date_range_outlined,
                         color: ColorStyles.grey, size: 16),
                     const SizedBox(width: 8),
                     Text(
-                      date,
+                      formattedDate.toString().substring(0, 10),
                       style: TypographyStyles.regular(12, ColorStyles.grey),
                       textAlign: TextAlign.start,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -229,36 +241,21 @@ class _ArtikelPageState extends State<ArtikelPage> {
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
       ),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SearchArtikelPage()),
-          );
-        },
-        child: AbsorbPointer(
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Cari Artikel',
-              hintStyle: TypographyStyles.medium(14, ColorStyles.black),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(
-                  left: 14,
-                  right: 12,
-                ),
-                child: Image.asset(
-                  AppAssets.searchIcon,
-                  width: 24,
-                  height: 24,
-                ),
-              ),
-              border: InputBorder.none,
-              prefixIconConstraints: const BoxConstraints(
-                minWidth: 12,
-                minHeight: 14,
-              ),
+      child: TextField(
+        controller: _searchController,
+        decoration: InputDecoration(
+          hintText: 'Cari Artikel',
+          hintStyle: TypographyStyles.medium(14, ColorStyles.black),
+          prefixIcon: Padding(
+            padding: const EdgeInsets.only(left: 14, right: 12),
+            child: Image.asset(
+              AppAssets.searchIcon,
+              width: 24,
+              height: 24,
             ),
           ),
+          border: InputBorder.none,
+          prefixIconConstraints: const BoxConstraints(minWidth: 12, minHeight: 14),
         ),
       ),
     );
