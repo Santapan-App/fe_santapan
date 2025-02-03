@@ -15,7 +15,7 @@ class PersonalisasiPage extends StatefulWidget {
 class _PersonalisasiPageState extends State<PersonalisasiPage> {
   final List<Map<String, dynamic>> selectedDiseases = [
     {'name': 'Diabetes', 'selected': true},
-    {'name': 'Kolesterol', 'selected': false},
+    {'name': 'Lambung', 'selected': false},
   ];
 
   final List<Map<String, dynamic>> selectedPreferences = [
@@ -121,16 +121,13 @@ class _PersonalisasiPageState extends State<PersonalisasiPage> {
             ],
           ),
           const SizedBox(height: 12),
-          ...items
-              .where((item) => item['selected'])
-              .map((item) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
-                      item['name'],
-                      style: TypographyStyles.medium(16, ColorStyles.black),
-                    ),
-                  ))
-              ,
+          ...items.where((item) => item['selected']).map((item) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  item['name'],
+                  style: TypographyStyles.medium(16, ColorStyles.black),
+                ),
+              )),
         ],
       ),
     );

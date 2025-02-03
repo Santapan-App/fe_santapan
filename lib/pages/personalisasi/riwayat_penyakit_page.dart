@@ -21,9 +21,9 @@ class RiwayatPenyakitPage extends StatefulWidget {
 class _RiwayatPenyakitPageState extends State<RiwayatPenyakitPage> {
   final List<Map<String, dynamic>> diseases = [
     {'name': 'Diabetes', 'type': 'diabetes', 'selected': false},
-    {'name': 'Asam Lambung/GERD', 'type': 'gerd', 'selected': false},
-    {'name': 'Kolesterol', 'type': 'kolestrol', 'selected': false},
-    {'name': 'Asam Urat', 'type': 'asam_urat', 'selected': false},
+    {'name': 'Lambung', 'type': 'lambung', 'selected': false},
+    {'name': 'Jantung', 'type': 'jantung', 'selected': false},
+    {'name': 'Obesitas', 'type': 'obesitas', 'selected': false},
   ];
 
   bool isLoading = false;
@@ -39,26 +39,26 @@ class _RiwayatPenyakitPageState extends State<RiwayatPenyakitPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 24),
-                if(widget.isEdit)
+                if (widget.isEdit)
                   Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: Image.asset(
-                        AppAssets.arrowLeft,
-                        width: 24,
-                        height: 24,
-                        color: widget.isEdit ? null : Colors.grey,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Image.asset(
+                          AppAssets.arrowLeft,
+                          width: 24,
+                          height: 24,
+                          color: widget.isEdit ? null : Colors.grey,
+                        ),
                       ),
-                    ),
-                    if (!widget.isEdit)
-                      Text(
-                        "Skip",
-                        style: TypographyStyles.bold(16, Colors.grey),
-                      ),
-                  ],
-                ),
+                      if (!widget.isEdit)
+                        Text(
+                          "Skip",
+                          style: TypographyStyles.bold(16, Colors.grey),
+                        ),
+                    ],
+                  ),
                 const SizedBox(height: 24),
                 Text(
                   widget.isEdit
@@ -76,7 +76,8 @@ class _RiwayatPenyakitPageState extends State<RiwayatPenyakitPage> {
                 Container(
                   width: double.infinity,
                   height: 320,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
@@ -86,7 +87,8 @@ class _RiwayatPenyakitPageState extends State<RiwayatPenyakitPage> {
                     itemBuilder: (context, index) {
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 2),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(20),
@@ -96,7 +98,8 @@ class _RiwayatPenyakitPageState extends State<RiwayatPenyakitPage> {
                           children: [
                             Text(
                               diseases[index]['name'],
-                              style: TypographyStyles.medium(14, ColorStyles.black),
+                              style: TypographyStyles.medium(
+                                  14, ColorStyles.black),
                             ),
                             Checkbox(
                               value: diseases[index]['selected'],
@@ -116,7 +119,9 @@ class _RiwayatPenyakitPageState extends State<RiwayatPenyakitPage> {
                 ),
                 const SizedBox(height: 32),
                 ButtonCustom(
-                  label: widget.isEdit ? "Simpan Perubahan" : "Simpan dan Lanjutkan",
+                  label: widget.isEdit
+                      ? "Simpan Perubahan"
+                      : "Simpan dan Lanjutkan",
                   onTap: () {
                     Navigator.push(
                       context,
@@ -130,8 +135,7 @@ class _RiwayatPenyakitPageState extends State<RiwayatPenyakitPage> {
                   },
                   isExpand: true,
                 ),
-                if (isLoading)
-                  const Center(child: CircularProgressIndicator()),
+                if (isLoading) const Center(child: CircularProgressIndicator()),
                 const SizedBox(height: 32),
               ],
             ),

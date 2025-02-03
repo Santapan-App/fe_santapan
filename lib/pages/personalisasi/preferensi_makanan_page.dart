@@ -69,24 +69,34 @@ class _PreferensiMakananPageState extends State<PreferensiMakananPage> {
   Future<void> savePreferences() async {
     String url = Urls.personalisasiURL;
 
-  Personalisasi personalisasi = Personalisasi(
-    diabetes: widget.penyakit.any((penyakit) => penyakit['type'] == 'diabetes' && penyakit['selected']),
-    gerd: widget.penyakit.any((penyakit) => penyakit['type'] == 'gerd' && penyakit['selected']),
-    asamUrat: widget.penyakit.any((penyakit) => penyakit['type'] == 'asam_urat' && penyakit['selected']),
-    kolestrol: widget.penyakit.any((penyakit) => penyakit['type'] == 'kolestrol' && penyakit['selected']),
-    rendahKarbohidrat: preferences.firstWhere((pref) => pref['name'] == 'Rendah Karbohidrat')['selected'],
-    tinggiProtein: preferences.firstWhere((pref) => pref['name'] == 'Tinggi Protein')['selected'],
-    vegetarian: preferences.firstWhere((pref) => pref['name'] == 'Vegetarian')['selected'],
-    rendahGula: preferences.firstWhere((pref) => pref['name'] == 'Rendah Gula')['selected'],
-    rendahKalori: preferences.firstWhere((pref) => pref['name'] == 'Rendah Kalori')['selected'],
-  );
+    Personalisasi personalisasi = Personalisasi(
+      diabetes: widget.penyakit.any(
+          (penyakit) => penyakit['type'] == 'diabetes' && penyakit['selected']),
+      lambung: widget.penyakit.any(
+          (penyakit) => penyakit['type'] == 'lambung' && penyakit['selected']),
+      jantung: widget.penyakit.any(
+          (penyakit) => penyakit['type'] == 'jantung' && penyakit['selected']),
+      obesitas: widget.penyakit.any(
+          (penyakit) => penyakit['type'] == 'obesitas' && penyakit['selected']),
+      rendahKarbohidrat: preferences.firstWhere(
+          (pref) => pref['name'] == 'Rendah Karbohidrat')['selected'],
+      tinggiProtein: preferences
+          .firstWhere((pref) => pref['name'] == 'Tinggi Protein')['selected'],
+      vegetarian: preferences
+          .firstWhere((pref) => pref['name'] == 'Vegetarian')['selected'],
+      rendahGula: preferences
+          .firstWhere((pref) => pref['name'] == 'Rendah Gula')['selected'],
+      rendahKalori: preferences
+          .firstWhere((pref) => pref['name'] == 'Rendah Kalori')['selected'],
+    );
 
-  Map<String, dynamic> body = personalisasi.toJson();
+    Map<String, dynamic> body = personalisasi.toJson();
 
     NetworkResponse response = await NetworkCaller().postRequest(url, body);
 
     if (response.isSuccess && response.body != null) {
-      await AuthUtility.setUserPreferences(personalisasi);  // Save preferences locally
+      await AuthUtility.setUserPreferences(
+          personalisasi); // Save preferences locally
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Preferences saved successfully!'),
@@ -127,7 +137,8 @@ class _PreferensiMakananPageState extends State<PreferensiMakananPage> {
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Image.asset(AppAssets.arrowLeft, width: 24, height: 24)),
+                      child: Image.asset(AppAssets.arrowLeft,
+                          width: 24, height: 24)),
                   Text(
                     "Skip",
                     style: TypographyStyles.bold(16, ColorStyles.primary),
@@ -144,7 +155,8 @@ class _PreferensiMakananPageState extends State<PreferensiMakananPage> {
               Container(
                 width: double.infinity,
                 height: 400,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -154,7 +166,8 @@ class _PreferensiMakananPageState extends State<PreferensiMakananPage> {
                   itemBuilder: (context, index) {
                     return Container(
                       margin: const EdgeInsets.symmetric(vertical: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 2),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(20),
@@ -164,7 +177,8 @@ class _PreferensiMakananPageState extends State<PreferensiMakananPage> {
                         children: [
                           Text(
                             preferences[index]['name'],
-                            style: TypographyStyles.medium(14, ColorStyles.black),
+                            style:
+                                TypographyStyles.medium(14, ColorStyles.black),
                           ),
                           Checkbox(
                             value: preferences[index]['selected'],

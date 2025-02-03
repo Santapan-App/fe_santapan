@@ -2,9 +2,9 @@ class Personalisasi {
   int id;
   int userId;
   bool diabetes;
-  bool gerd;
-  bool asamUrat;
-  bool kolestrol;
+  bool lambung;
+  bool obesitas;
+  bool jantung;
   bool rendahKarbohidrat;
   bool tinggiProtein;
   bool vegetarian;
@@ -17,9 +17,9 @@ class Personalisasi {
     this.id = 0,
     this.userId = 0,
     this.diabetes = false,
-    this.gerd = false,
-    this.asamUrat = false,
-    this.kolestrol = false,
+    this.lambung = false,
+    this.obesitas = false,
+    this.jantung = false,
     this.rendahKarbohidrat = false,
     this.tinggiProtein = false,
     this.vegetarian = false,
@@ -35,16 +35,20 @@ class Personalisasi {
       id: json['id'] ?? 0,
       userId: json['user_id'] ?? 0,
       diabetes: json['diabetes'] ?? false,
-      gerd: json['gerd'] ?? false,
-      asamUrat: json['asam_urat'] ?? false,
-      kolestrol: json['kolestrol'] ?? false,
+      lambung: json['lambung'] ?? false,
+      obesitas: json['obesitas'] ?? false,
+      jantung: json['jantung'] ?? false,
       rendahKarbohidrat: json['rendah_karbohidrat'] ?? false,
       tinggiProtein: json['tinggi_protein'] ?? false,
       vegetarian: json['vegetarian'] ?? false,
       rendahGula: json['rendah_gula'] ?? false,
       rendahKalori: json['rendah_kalori'] ?? false,
-      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
-      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
     );
   }
 
@@ -54,9 +58,9 @@ class Personalisasi {
       'id': id,
       'user_id': userId,
       'diabetes': diabetes,
-      'gerd': gerd,
-      'asam_urat': asamUrat,
-      'kolestrol': kolestrol,
+      'lambung': lambung,
+      'obesitas': obesitas,
+      'jantung': jantung,
       'rendah_karbohidrat': rendahKarbohidrat,
       'tinggi_protein': tinggiProtein,
       'vegetarian': vegetarian,
