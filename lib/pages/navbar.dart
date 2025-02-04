@@ -18,21 +18,27 @@ class _NavbarState extends State<Navbar> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
 
-  void _onPageChanged(int index) {
+  void _onPageChanged(int pageIndex) {
+    // Map PageView index to BottomNavigationBar index
+    int navbarIndex = pageIndex < 2 ? pageIndex : pageIndex + 1;
     setState(() {
-      _currentIndex = index;
+      _currentIndex = navbarIndex;
     });
   }
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      // Open ScanPage directly without changing the page view
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const ScanPage()),
       );
     } else {
-      _pageController.jumpToPage(index > 2 ? index - 1 : index); // Adjust index
+      // Map BottomNavigationBar index to PageView index
+      int pageIndex = index > 2 ? index - 1 : index;
+      setState(() {
+        _currentIndex = index;
+      });
+      _pageController.jumpToPage(pageIndex);
     }
   }
 

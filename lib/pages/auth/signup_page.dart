@@ -350,8 +350,7 @@ class _SignupPageState extends State<SignupPage> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const VerificationPage()),
+                                      builder: (context) => const SigninPage()),
                                 );
                               },
                           ),

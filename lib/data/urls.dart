@@ -1,6 +1,6 @@
 class Urls {
-  static String baseUrl = 'http://192.168.100.105:9090';
-  static String transactionServiceUrl = 'http://192.168.100.105:9091';
+  static String baseUrl = 'http://192.168.18.85:9090';
+  static String transactionServiceUrl = 'http://192.168.18.85:9091';
   static String loginURl = '$baseUrl/login';
   static String personalisasiURL = '$baseUrl/personalisasi';
   static String registerURl = '$baseUrl/register';

@@ -8,6 +8,7 @@ import 'package:santapan_fe/data/models/menu_model.dart';
 import 'package:santapan_fe/data/models/nutrition_model.dart';
 import 'package:santapan_fe/data/urls.dart';
 import 'package:santapan_fe/models/response_model.dart';
+import 'package:santapan_fe/pages/beranda/beranda_page.dart';
 import 'package:santapan_fe/pages/beranda/detail_menu_page.dart';
 import 'package:santapan_fe/pages/navbar.dart';
 import 'package:santapan_fe/pages/scan/nutrisi_result.dart';
@@ -34,7 +35,7 @@ class _ScanResultPageState extends State<ScanResultPage> {
   bool isLoading = false;
   NutritionModel? _nutritionModel;
   String? errorMessage;
-  MenuModel? _menuModel;  // Added to hold the recommended menu data
+  MenuModel? _menuModel; // Added to hold the recommended menu data
 
   @override
   void initState() {
@@ -50,8 +51,8 @@ class _ScanResultPageState extends State<ScanResultPage> {
     });
 
     // Fetch nutrition data based on prediction
-    final NetworkResponse response =
-        await NetworkCaller().getRequest(Urls.nutritionUrl + "?classification=" + widget.prediction);
+    final NetworkResponse response = await NetworkCaller()
+        .getRequest(Urls.nutritionUrl + "?classification=" + widget.prediction);
 
     if (response.isSuccess) {
       setState(() {
@@ -73,8 +74,8 @@ class _ScanResultPageState extends State<ScanResultPage> {
 
   Future<void> fetchRecommendedMenus() async {
     // Replace this with your actual API endpoint or logic to fetch recommended menus
-    final NetworkResponse response =
-        await NetworkCaller().getRequest(Urls.menuUrl + "/food-nutrition?food_name=${widget.prediction}");
+    final NetworkResponse response = await NetworkCaller().getRequest(
+        Urls.menuUrl + "/food-nutrition?food_name=${widget.prediction}");
 
     if (response.isSuccess) {
       setState(() {
@@ -99,6 +100,7 @@ class _ScanResultPageState extends State<ScanResultPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 32),
               // Back Button and Title
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -162,48 +164,72 @@ class _ScanResultPageState extends State<ScanResultPage> {
               if (isLoading)
                 const Center(child: CircularProgressIndicator())
               else if (errorMessage != null)
-                Center(child: Text(errorMessage!, style: TypographyStyles.regular(14, Colors.red)))
+                Center(
+                    child: Text(errorMessage!,
+                        style: TypographyStyles.regular(14, Colors.red)))
               else if (_nutritionModel != null)
                 NutrisiResult(
                   nutrisiList: [
-                    Nutrisi(label: 'Karbo', value: _nutritionModel!.carbohydrates.toString(), satuan: 'g'),
-                    Nutrisi(label: 'Protein', value: _nutritionModel!.protein.toString(), satuan: 'g'),
-                    Nutrisi(label: 'Kalori', value: _nutritionModel!.calories.toString(), satuan: 'kcal'),
-                    Nutrisi(label: 'Gula', value: _nutritionModel!.sugar.toString(), satuan: 'g'),
-                    Nutrisi(label: 'Fat', value: _nutritionModel!.fat.toString(), satuan: 'g'),
+                    Nutrisi(
+                        label: 'Karbo',
+                        value: _nutritionModel!.carbohydrates.toString(),
+                        satuan: 'g'),
+                    Nutrisi(
+                        label: 'Protein',
+                        value: _nutritionModel!.protein.toString(),
+                        satuan: 'g'),
+                    Nutrisi(
+                        label: 'Kalori',
+                        value: _nutritionModel!.calories.toString(),
+                        satuan: 'kcal'),
+                    Nutrisi(
+                        label: 'Gula',
+                        value: _nutritionModel!.sugar.toString(),
+                        satuan: 'g'),
+                    Nutrisi(
+                        label: 'Fat',
+                        value: _nutritionModel!.fat.toString(),
+                        satuan: 'g'),
                   ],
                 ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               // Recommendation Section
-              Text("Rekomendasi Hidangan", style: TypographyStyles.bold(16, ColorStyles.black)),
+              Text("Rekomendasi Hidangan",
+                  style: TypographyStyles.bold(16, ColorStyles.black)),
               Text(
                 "Hidangan berikut cocok dengan makanan yang kamu scan!",
                 style: TypographyStyles.bold(14, ColorStyles.grey),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               // Display Recommended Menus
               _menuModel == null
-                  ? Center(child: Text('Produk tidak ditemukan.', style: TypographyStyles.medium(16, Colors.grey)))
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: _menuModel?.data?.menus?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final product = _menuModel?.data?.menus?[index];
-                        if (product == null) return const SizedBox();
+                  ? Center(
+                      child: Text('Produk tidak ditemukan.',
+                          style: TypographyStyles.medium(16, Colors.grey)))
+                  : SizedBox(
+                      height:
+                          300, // Fixed height to control the ListView's size
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _menuModel?.data?.menus?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final product = _menuModel?.data?.menus?[index];
+                          if (product == null) return const SizedBox();
 
-                        return _buildMenuItem(
-                          id: product.id ?? 0,
-                          name: product.title ?? '',
-                          description: product.description ?? '',
-                          price: (product.price ?? 0).toString(),
-                          rating: 4.5,
-                          imageUrl: product.image ?? '',
-                        );
-                      },
+                          return _buildMenuItem(
+                            id: product.id ?? 0,
+                            name: product.title ?? '',
+                            description: product.description ?? '',
+                            price: (product.price ?? 0).toString(),
+                            rating: 4.5,
+                            imageUrl: product.image ?? '',
+                          );
+                        },
+                      ),
                     ),
 
               const SizedBox(height: 20),
@@ -212,7 +238,12 @@ class _ScanResultPageState extends State<ScanResultPage> {
               ButtonCustom(
                 label: "Kembali ke Beranda",
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Navbar(),
+                    ),
+                  );
                 },
                 isExpand: true,
               ),

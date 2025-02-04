@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
+import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
 import 'package:santapan_fe/pages/scan/helper.dart';
@@ -61,7 +62,13 @@ class _ScanPageState extends State<ScanPage> {
       List<String> prediction = _modelHelper.predict(image);
 
       // Navigate to detail page with prediction result
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ScanResultPage(prediction: prediction[0], accuracy: prediction[1], image: image)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ScanResultPage(
+                  prediction: prediction[0],
+                  accuracy: prediction[1],
+                  image: image)));
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Berhasil mengklasifikasikan gambar')),
@@ -87,44 +94,56 @@ class _ScanPageState extends State<ScanPage> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: _cameraController != null && _cameraController!.value.isInitialized
+              child: _cameraController != null &&
+                      _cameraController!.value.isInitialized
                   ? CameraPreview(_cameraController!)
                   : const Center(child: CircularProgressIndicator()),
             ),
             Positioned(
-              top: 0,
-              left: 0,
+              top: 12,
+              left: 16,
               right: 0,
-              child: AppBar(
-                title: Text(
-                  'Scan Makanan',
-                  style: TypographyStyles.bold(20, ColorStyles.bgScreen),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Image.asset(
+                      AppAssets.leftRoundedIcon,
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                  const SizedBox(width: 90),
+                  Text(
+                    "Scan Makanan",
+                    style: TypographyStyles.bold(20, ColorStyles.bgScreen),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 60,
+              left: 16,
+              right: 16,
+              child: Card(
+                elevation: 0, // Adjust elevation for shadow effect
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8), // Rounded corners
                 ),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                iconTheme: IconThemeData(color: ColorStyles.bgScreen),  // Set back button color
+                color: Colors.amber,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Text(
+                    'Arahkan kamera ke makanan untuk menemukan rekomendasi sehat dari Santapan',
+                    style: TypographyStyles.bold(14, ColorStyles.bgScreen),
+                  ),
+                ),
               ),
             ),
-       Positioned(
-          top: 60,
-          left: 16,
-          right: 16,
-          child: Card(
-            elevation: 0, // Adjust elevation for shadow effect
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8), // Rounded corners
-            ),
-            color: Colors.amber,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                'Arahkan kamera mu ke makanan atau barcode pada kemasan makanan.',
-                style: TypographyStyles.bold(14, ColorStyles.bgScreen),
-              ),
-            ),
-          ),
-        ),
-           
           ],
         ),
       ),
