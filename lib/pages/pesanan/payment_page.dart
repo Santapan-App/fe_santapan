@@ -130,6 +130,7 @@ class _PaymentPageState extends State<PaymentPage> {
       "amount": subtotal,
       "item_names": cartResponseModel.data?.items?.map((e) => e.name).toList(),
       "item_prices": cartResponseModel.data?.items?.map((e) => e.price).toList(),
+      "item_images": cartResponseModel.data?.items?.map((e) => e.imageUrl).toList(),
       "item_qtys": itemQuantities.values.toList(),
       "courier_id": 1,
       "address_id": address?.id,
