@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/utils/auth_utils.dart';
 import 'package:santapan_fe/widget/button_custom.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -18,9 +19,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-    // Inisialisasi data pengguna
-    _nameController.text = "Full Name 1213u1u39u19";
-    _emailController.text = "email@example.com";
   }
 
   @override
@@ -43,12 +41,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
               const SizedBox(height: 24),
               _buildTextField(
                 controller: _nameController,
-                hintText: "Nama kamu",
+                hintText: AuthUtility.userInfo.email ?? '',
               ),
               const SizedBox(height: 16),
               _buildTextField(
                 controller: _emailController,
-                hintText: "Alamat Email",
+                hintText: AuthUtility.userInfo.fullName ?? '',
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 32),
