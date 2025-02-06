@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:santapan_fe/core/app_assets.dart';
 import 'package:santapan_fe/core/color_styles.dart';
 import 'package:santapan_fe/core/typography_styles.dart';
+import 'package:santapan_fe/data/models/address_detail_model.dart';
 import 'package:santapan_fe/data/models/cart_item_model.dart';
 import 'package:santapan_fe/data/models/courier_detail_model.dart';
 import 'package:santapan_fe/data/models/transaction_detail_model.dart';
@@ -26,6 +27,7 @@ class _DetailStatusPesananPageState extends State<DetailStatusPesananPage> {
   String status = "pending"; // Example status; change this as needed
   bool isLoading = false;
   CartResponseModel? cartResponseModel;
+  AddressDetailModel? addressDetailModel;
 
   @override
   void initState() {
@@ -109,8 +111,11 @@ class _DetailStatusPesananPageState extends State<DetailStatusPesananPage> {
 
     if (response.isSuccess) {
       _transactionDetailModel = TransactionDetail.fromJson(response.body!);
-      await getTransactionCourier(_transactionDetailModel!.courierId);
-      await getTransactionCart(_transactionDetailModel!.cartId);
+      if (_transactionDetailModel != null) {
+        await getTransactionCourier(_transactionDetailModel!.courierId ?? 0);
+        await getTransactionCart(_transactionDetailModel!.cartId ?? 0);
+        await getTransactionAddress(_transactionDetailModel!.addressId ?? 0);
+      }
       if(mounted) {
         setState(() {
           status = _transactionDetailModel!.status;
@@ -133,8 +138,22 @@ class _DetailStatusPesananPageState extends State<DetailStatusPesananPage> {
   }
 
 
-  Future<void> getTransactionAddress() async {
+  Future<void> getTransactionAddress(int id) async {
+    // Correctly use the `id` parameter from the widget
+    final NetworkResponse response = await NetworkCaller().getRequest(
+        '${Urls.addressUrl}/1'); // Use widget.id as int
 
+    if (response.isSuccess) {
+      addressDetailModel = AddressDetailModel.fromJson(response.body!);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to load data address!"),
+          ),
+        );
+      }
+    }
   }
 
   Future<void> getTransactionCourier(int courierId) async {
@@ -500,7 +519,14 @@ Container daftarPesanan() {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "Jl Hj Umayah II, Kota Bandung",
+                      addressDetailModel?.data?.address != null ? "${addressDetailModel?.data?.label} - ${addressDetailModel?.data?.address}" : "Loading...",
+                      style: TypographyStyles.regular(12, ColorStyles.grey),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      addressDetailModel?.data?.notes != null ? "Notes: ${addressDetailModel?.data?.notes}" : "Notes: -",
                       style: TypographyStyles.regular(12, ColorStyles.grey),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,

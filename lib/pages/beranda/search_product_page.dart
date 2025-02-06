@@ -31,7 +31,7 @@ class _SearchProductPageState extends State<SearchProductPage> {
 
   Future<void> fetchProducts(String? query) async {
     final NetworkResponse response =
-        await NetworkCaller().getRequest("${Urls.menuUrl}?num=10&search=${(query ?? '')}");
+        await NetworkCaller().getRequest("${Urls.menuUrl}?num=8&search=${(query ?? '')}");
 
     if (response.isSuccess) {
       _menuModel = MenuModel.fromJson(response.body!);

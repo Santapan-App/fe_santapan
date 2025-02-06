@@ -125,15 +125,16 @@ class _PaymentPageState extends State<PaymentPage> {
       return;
     }
 
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.transactionUrl, {
+    final body =  {
       "amount": subtotal,
       "item_names": cartResponseModel.data?.items?.map((e) => e.name).toList(),
       "item_prices": cartResponseModel.data?.items?.map((e) => e.price).toList(),
       "item_qtys": itemQuantities.values.toList(),
+      "item_images": cartResponseModel.data?.items?.map((e) => e.imageUrl).toList(),
       "courier_id": 1,
       "address_id": address?.id,
-    });
+    };
+    final NetworkResponse response = await NetworkCaller().postRequest(Urls.transactionUrl, body);
     if (response.isSuccess) {
       transactionResponseModel = PaymentDetailModel.fromJson(response.body!);
       if(transactionResponseModel.success == true) {
@@ -173,7 +174,7 @@ class _PaymentPageState extends State<PaymentPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Failed to add transaction 2!"),
+            content: Text("Failed to add transaction!"),
             backgroundColor: Colors.red,
           ),
         );
@@ -268,7 +269,7 @@ class _PaymentPageState extends State<PaymentPage> {
           const SizedBox(
             height: 10,
           ),
-          itemDetailPesanan(context, "Pengiriman", "Rp 100.000"),
+          itemDetailPesanan(context, "Pengiriman", "Rp 10.000"),
         ],
       ),
     );

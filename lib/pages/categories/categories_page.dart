@@ -73,6 +73,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                     itemBuilder: (context, index) {
                       final menu = _menuModel.data![index];
                       return _buildMenuItem(
+                        id: menu.id ?? 0,
                         name: menu.title ?? '',
                         description: menu.description ?? '',
                         price: menu.price?.toString() ?? '',
@@ -86,6 +87,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
   }
 
   Widget _buildMenuItem({
+    required int id,
     required String name,
     required String description,
     required String price,
@@ -97,9 +99,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const DetailMenuPage(
-              id: 1
-            ),
+            builder: (context) =>  DetailMenuPage(id: id),
           ),
         );
       },
